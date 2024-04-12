@@ -1,9 +1,9 @@
 from tensorflow.keras import preprocessing
 import sys
-sys.path.append('../../')
-from chatbot.utils.Preprocess_kiwi import Preprocess
+sys.path.append('../')
+from utils.Preprocess_kiwi import Preprocess
 
-sent = "청솔관이 좋음 솔빛관이 좋음?"
+sent = "빩때는 얼마야?"
 
 p = Preprocess(word2index_dic='../train_tools/dict/chatbot_dict.bin',userdic = '../utils/user_dict.txt')
 

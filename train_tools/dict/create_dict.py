@@ -1,13 +1,15 @@
 #
 # 챗봇에서 사용하는 사전 파일 생성
 #
-from utils.Preprocess import Preprocess
+import sys
+sys.path.append('../../')
+from utils.Preprocess_kiwi import Preprocess
 from tensorflow.keras import preprocessing
 import pickle
 
 # 말뭉치 데이터 읽어오기
 def read_corpus_data(filename):
-    with open(filename, 'r') as f:
+    with open(filename, 'r',encoding='UTF-8') as f:
         data = [line.split('\t') for line in f.read().splitlines()]
     return data
 
@@ -15,10 +17,8 @@ def read_corpus_data(filename):
 # 말뭉치 데이터 가져오기
 corpus_data = read_corpus_data('./corpus.txt')
 
-
 # 망뭉치 데이터에서 키워드만 추출해서 사전 리스트 생성
-p = Preprocess(word2index_dic='chatbot_dict.bin',
-               userdic = '../../utils/user_dic.tsv')
+p = Preprocess(word2index_dic='chatbot_dict.bin',userdic = '../../utils/user_dict.txt')
 dict = []
 for c in corpus_data:
     pos = p.pos(c[1])
