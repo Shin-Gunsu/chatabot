@@ -1,22 +1,24 @@
 # 필요한 모듈 임포트
 import pandas as pd
 import tensorflow.compat.v1 as tf
+import sys
+import os
+file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
+sys.path.append(file_path+'../../../')
 from tensorflow.keras import preprocessing
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Embedding, Dense, Dropout, Conv1D, GlobalMaxPool1D, concatenate
 
 
 # 데이터 읽어오기
-train_file = "cnnTraindata.csv"
+train_file = file_path + "/cnnTraindata.csv"
 data = pd.read_csv(train_file, delimiter=',')
 queries = data['query'].tolist()
 intents = data['intent'].tolist()
 
-import sys
-sys.path.append('../../../')
-from chatbot.utils.Preprocess import Preprocess
-p = Preprocess(word2index_dic='../../train_tools/dict/chatbot_dict.bin',
-               userdic='../../utils/user_dic.tsv')
+from utils.Preprocess import Preprocess
+p = Preprocess(word2index_dic=file_path + '/../../train_tools/dict/chatbot_dict.bin',
+userdic=file_path + '/../../utils/user_dict.txt')
 
 # 단어 시퀀스 생성
 sequences = []
@@ -29,8 +31,8 @@ for sentence in queries:
 
 # 단어 인덱스 시퀀스 벡터 ○2
 # 단어 시퀀스 벡터 크기
-#from config.GlobalParams import MAX_SEQ_LEN
-MAX_SEQ_LEN=25
+from config.GlobalParams import MAX_SEQ_LEN
+
 padded_seqs = preprocessing.sequence.pad_sequences(sequences, maxlen=MAX_SEQ_LEN, padding='post')
 
 # (105658, 15)
@@ -89,7 +91,7 @@ concat = concatenate([pool1, pool2, pool3])
 hidden = Dense(128, activation=tf.nn.relu)(concat)
 dropout_hidden = Dropout(rate=dropout_prob)(hidden)
 logits = Dense(4, name='logits')(dropout_hidden)
-predictions = Dense(5, activation=tf.nn.softmax)(logits)
+predictions = Dense(4, activation=tf.nn.softmax)(logits)
 
 
 # 모델 생성  ○5

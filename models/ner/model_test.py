@@ -2,11 +2,14 @@ from tensorflow.keras.models import Model, load_model
 from tensorflow.keras import preprocessing
 import numpy as np
 import sys
-sys.path.append('../../../')
-from chatbot.utils.Preprocess import Preprocess
+import os
 
-p = Preprocess(word2index_dic='../../train_tools/dict/chatbot_dict.bin',
-               userdic='../../utils/user_dic.tsv')
+file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
+sys.path.append(file_path+'../../')
+from utils.Preprocess import Preprocess
+
+p = Preprocess(word2index_dic=file_path+'/../../train_tools/dict/chatbot_dict.bin',
+               userdic=file_path+'/../../utils/user_dic.tsv')
 
 
 new_sentence = '오늘 오전 13시 2분에 탕수육 주문 하고 싶어요'

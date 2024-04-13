@@ -4,7 +4,7 @@ from utils.Preprocess import Preprocess
 
 # 전처리 객체 생성
 p = Preprocess(word2index_dic='../train_tools/dict/chatbot_dict.bin',
-               userdic='../utils/user_dic.tsv')
+               userdic='../utils/user_dic.txt')
 
 # 질문/답변 학습 디비 연결 객체 생성
 db = Database(
