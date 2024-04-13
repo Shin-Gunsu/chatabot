@@ -1,14 +1,15 @@
 import tensorflow as tf
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras import preprocessing
-
+import sys
+import os
 
 # 의도 분류 모델 모듈
 class IntentModel:
     def __init__(self, model_name, proprocess):
 
         # 의도 클래스 별 레이블
-        self.labels = {1: "졸업요건", 2: "위치", 3: "번호", 4: "과제"}
+        self.labels = {0: "졸업요건", 1: "위치", 2: "번호", 3: "과제"}
 
         # 의도 분류 모델 불러오기
         self.model = load_model(model_name)
@@ -27,6 +28,10 @@ class IntentModel:
         sequences = [self.p.get_wordidx_sequence(keywords)]
 
         # 단어 시퀀스 벡터 크기
+
+
+        file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
+        sys.path.append(file_path+'../../')
         from config.GlobalParams import MAX_SEQ_LEN
 
         # 패딩처리

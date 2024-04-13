@@ -1,26 +1,27 @@
 import tensorflow.compat.v1 as tf
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras import preprocessing
-
-intent_labels = {1: "졸업요건", 2: "위치", 3: "번호", 4: "과제"}
+import sys
+import os
+intent_labels = {0: "졸업요건", 1: "위치", 2: "번호", 3: "과제"}
 
 # 의도 분류 모델 불러오기
 model = load_model('intent_model.h5')
 
 query = "컴공 사무실 번호 좀"
 
-import sys
-sys.path.append('../../../')
-from chatbot.utils.Preprocess import Preprocess
-p = Preprocess(word2index_dic='../../train_tools/dict/chatbot_dict.bin',
-               userdic='../../utils/user_dic.tsv')
+file_path = os.path.dirname(__file__) 
+sys.path.append(file_path+'../../../')
+from utils.Preprocess import Preprocess
+p = Preprocess(word2index_dic=file_path + '/../../train_tools/dict/chatbot_dict.bin',
+               userdic= file_path + '/../../utils/user_dict.txt')
 pos = p.pos(query)
 keywords = p.get_keywords(pos, without_tag=True)
 seq = p.get_wordidx_sequence(keywords)
 sequences = [seq]
 
 # 단어 시퀀스 벡터 크기
-from chatbot.config.GlobalParams import MAX_SEQ_LEN
+from config.GlobalParams import MAX_SEQ_LEN
 padded_seqs = preprocessing.sequence.pad_sequences(sequences, maxlen=MAX_SEQ_LEN, padding='post')
 
 predict = model.predict(padded_seqs)
