@@ -1,4 +1,4 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras import preprocessing
 import sys

@@ -1,11 +1,14 @@
 import matplotlib.pyplot as plt
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from tensorflow.keras import preprocessing
 from sklearn.model_selection import train_test_split
 import numpy as np
 import sys
-sys.path.append('../../../')
-from chatbot.utils.Preprocess import Preprocess
+import os
+
+file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
+sys.path.append(file_path+'../../')
+from utils.Preprocess import Preprocess
 
 # 학습 파일 불러오기
 def read_file(file_name):
@@ -23,11 +26,11 @@ def read_file(file_name):
                 this_sent.append(tuple(l.split()))
     return sents
 
-p = Preprocess(word2index_dic='../../train_tools/dict/chatbot_dict.bin',
-               userdic='../../utils/user_dic.tsv')
+p = Preprocess(word2index_dic=file_path + '/../../train_tools/dict/chatbot_dict.bin',
+               userdic=file_path + '/../../utils/user_dic.tsv')
 
 # 학습용 말뭉치 데이터를 불러옴
-corpus = read_file('ner_train.txt')
+corpus = read_file(file_path + '/ner_train.txt')
 
 # 말뭉치 데이터에서 단어와 BIO 태그만 불러와 학습용 데이터셋 생성
 sentences, tags = [], []
@@ -105,7 +108,7 @@ model.compile(loss='categorical_crossentropy', optimizer=Adam(0.01), metrics=['a
 model.fit(x_train, y_train, batch_size=128, epochs=10)
 
 print("평가 결과 : ", model.evaluate(x_test, y_test)[1])
-model.save('ner_model.h5')
+model.save(file_path + '/ner_model.h5')
 
 
 # 시퀀스를 NER 태그로 변환

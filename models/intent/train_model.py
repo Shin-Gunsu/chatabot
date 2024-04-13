@@ -112,5 +112,5 @@ print('loss: %f' % (loss))
 
 
 # 모델 저장  ○8
-model.save('intent_model.h5')
+model.save(file_path + '/intent_model.h5')
 
