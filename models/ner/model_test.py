@@ -8,12 +8,12 @@ import os
 
 file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
 sys.path.append(file_path + '../../../')
-from utils.Preprocess_komoran import Preprocess
+from utils.Preprocess import Preprocess
 
-p = Preprocess(word2index_dic=file_path+'/../../train_tools/dict/chatbot_dict.bin')
+p = Preprocess(word2index_dic=file_path+'/../../train_tools/dict/chatbot_dict.bin',userdic=file_path + '/../../utils/user_dict.txt')
 
 
-new_sentence = '오늘 오전 13시 2분에 탕수육 주문 하고 싶어요'
+new_sentence = '뭐가 문제인겨;;'
 pos = p.pos(new_sentence)
 keywords = p.get_keywords(pos, without_tag=True)
 new_seq = p.get_wordidx_sequence(keywords)

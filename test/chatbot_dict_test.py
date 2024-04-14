@@ -1,15 +1,19 @@
 import pickle
+import sys
+import os
+file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
+sys.path.append(file_path+'../../')
 from utils.Preprocess import Preprocess
 
 # 단어 사전 불러오기
-f = open("../train_tools/dict/chatbot_dict.bin", "rb")
+f = open(file_path + "/../train_tools/dict/chatbot_dict.bin", "rb")
 word_index = pickle.load(f)
 f.close()
 
-sent = "내일 오전 10시에 탕수육 주문하고 싶어 ㅋㅋ"
+sent = "컴공 과제 개많고 ㅋㅋ"
 
 # 전처리 객체 생성
-p = Preprocess(userdic='../utils/user_dic.txt')
+p = Preprocess(userdic=file_path + '/../utils/user_dict.txt')
 
 # 형태소분석기 실행
 pos = p.pos(sent)

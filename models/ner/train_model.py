@@ -7,7 +7,7 @@ import sys
 import os
 
 file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
-sys.path.append(file_path+'../../')
+sys.path.append(file_path+'../../../')
 from utils.Preprocess import Preprocess
 
 # 학습 파일 불러오기
@@ -27,7 +27,7 @@ def read_file(file_name):
     return sents
 
 p = Preprocess(word2index_dic=file_path + '/../../train_tools/dict/chatbot_dict.bin',
-               userdic=file_path + '/../../utils/user_dic.tsv')
+               userdic=file_path + '/../../utils/user_dict.txt')
 
 # 학습용 말뭉치 데이터를 불러옴
 corpus = read_file(file_path + '/ner_train.txt')
@@ -105,11 +105,11 @@ model.add(Embedding(input_dim=vocab_size, output_dim=30, mask_zero=True))
 model.add(Bidirectional(LSTM(200, return_sequences=True, dropout=0.50, recurrent_dropout=0.25)))
 model.add(TimeDistributed(Dense(tag_size, activation='softmax')))
 model.compile(loss='categorical_crossentropy', optimizer=Adam(0.01), metrics=['accuracy'])
-model.fit(x_train, y_train, batch_size=128, epochs=10)
+model.fit(x_train, y_train, batch_size=128, epochs=3)
 
 print("평가 결과 : ", model.evaluate(x_test, y_test)[1])
-model.save(file_path + '/ner_model.h5')
 
+model.save(file_path + '/ner_model.h5')
 
 # 시퀀스를 NER 태그로 변환
 def sequences_to_tag(sequences):  # 예측값을 index_to_ner를 사용하여 태깅 정보로 변경하는 함수.
