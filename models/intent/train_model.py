@@ -55,7 +55,7 @@ test_ds = ds.skip(train_size + val_size).take(test_size).batch(20)
 # 하이퍼 파라미터 설정
 dropout_prob = 0.5
 EMB_SIZE = 128
-EPOCH = 5
+EPOCH = 3
 VOCAB_SIZE = len(p.word_index) + 1 #전체 단어 개수
 
 
@@ -80,7 +80,7 @@ pool2 = GlobalMaxPool1D()(conv2)
 
 conv3 = Conv1D(
     filters=128,
-    kernel_size=5,
+    kernel_size=4,
     padding='valid',
     activation=tf.nn.relu)(dropout_emb)
 pool3 = GlobalMaxPool1D()(conv3)
@@ -90,7 +90,7 @@ concat = concatenate([pool1, pool2, pool3])
 
 hidden = Dense(128, activation=tf.nn.relu)(concat)
 dropout_hidden = Dropout(rate=dropout_prob)(hidden)
-logits = Dense(5, name='logits')(dropout_hidden)
+logits = Dense(4, name='logits')(dropout_hidden)
 predictions = Dense(5, activation=tf.nn.softmax)(logits)
 
 

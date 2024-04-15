@@ -3,7 +3,7 @@ from tensorflow.keras.models import Model, load_model
 from tensorflow.keras import preprocessing
 import sys
 import os
-intent_labels = {0: "졸업요건", 1: "위치", 2: "번호", 3: "과제", 4:"강의추천"}
+intent_labels = {0: "졸업요건", 1: "위치", 2: "번호", 3: "과제"}
 file_path = os.path.dirname(__file__) 
 sys.path.append(file_path+'../../../')
 from utils.Preprocess import Preprocess
