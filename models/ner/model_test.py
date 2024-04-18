@@ -1,4 +1,4 @@
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras import preprocessing
 import numpy as np
@@ -10,10 +10,10 @@ file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가�
 sys.path.append(file_path + '../../../')
 from utils.Preprocess import Preprocess
 
-p = Preprocess(word2index_dic=file_path+'/../../train_tools/dict/chatbot_dict.bin',userdic=file_path + '/../../utils/user_dict.txt')
+p = Preprocess(word2index_dic=file_path+'/../../train_tools/dict/chatbot_dict.bin',userdic=file_path + '/../../utils/user_dict_test.txt')
 
 
-new_sentence = '뭐가 문제인겨;;'
+new_sentence = '가락지빵 내놓으라고'
 pos = p.pos(new_sentence)
 keywords = p.get_keywords(pos, without_tag=True)
 new_seq = p.get_wordidx_sequence(keywords)
@@ -25,6 +25,7 @@ print("새로운 유형의 시퀀스 : ", new_padded_seqs)
 
 # NER 예측
 model = load_model(file_path + '/ner_model.h5')
+
 p = model.predict(np.array([new_padded_seqs[0]]))
 p = np.argmax(p, axis=-1) # 예측된 NER 인덱스 값 추출
 
