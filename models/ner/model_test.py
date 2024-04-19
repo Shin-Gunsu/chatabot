@@ -13,7 +13,7 @@ from utils.Preprocess import Preprocess
 p = Preprocess(word2index_dic=file_path+'/../../train_tools/dict/chatbot_dict.bin',userdic=file_path + '/../../utils/user_dict_test.txt')
 
 
-new_sentence = '가락지빵 내놓으라고'
+new_sentence = '오늘 가락지빵 내놓으라고'
 pos = p.pos(new_sentence)
 keywords = p.get_keywords(pos, without_tag=True)
 new_seq = p.get_wordidx_sequence(keywords)
