@@ -1,6 +1,6 @@
 # 필요한 모듈 임포트
 import pandas as pd
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 import sys
 import os
 file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.

@@ -98,7 +98,7 @@ model.add(Embedding(input_dim=vocab_size, output_dim=30, mask_zero=True))
 model.add(LSTM(200, return_sequences=True, dropout=0.50, recurrent_dropout=0.25))
 model.add(TimeDistributed(Dense(tag_size, activation='softmax')))
 model.compile(loss='categorical_crossentropy', optimizer=Adam(0.01), metrics=['accuracy'])
-model.fit(x_train, y_train, batch_size=128, epochs=10)
+model.fit(x_train, y_train, batch_size=128, epochs=3)
 print("평가 결과 : ", model.evaluate(x_test, y_test)[1])
 
 
@@ -128,7 +128,7 @@ model.save(file_path + '/ner_model.h5')
 
 # 새로운 유형의 문장 NER 예측
 word_to_index = sent_tokenizer.word_index
-new_sentence = '가락지빵 오늘 주문 예약할께요.'.split()
+new_sentence = '간짜장에 육개장 경찰서로 배달해주세요.'.split()
 new_x = []
 for w in new_sentence:
     try:
