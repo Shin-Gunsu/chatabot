@@ -1,7 +1,9 @@
 import csv
+import sys
+import os
+file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
 
-
-file = '../ner/ner_train.txt'
+file = file_path + '/../ner/ner_train.txt'
 
 # 학습 파일 불러오기
 def read_file(file_name):
@@ -20,7 +22,7 @@ def read_file(file_name):
 
 
 corpus = read_file(file)
-file = open("corpus.txt", 'w')
+file = open(file_path + "/corpus_userdict.txt", 'w',encoding='utf-8')
 for c in corpus:
     c = "{}\t{}\t{}\n".format('0000', c, 0)
     file.write(c)

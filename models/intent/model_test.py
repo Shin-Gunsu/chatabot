@@ -13,7 +13,6 @@ model = load_model(file_path + '/intent_model.h5')
 
 query = "청솔관 사감실 번호좀 알려줘?"
 
-
 p = Preprocess(word2index_dic=file_path + '/../../train_tools/dict/chatbot_dict.bin',
                userdic= file_path + '/../../utils/user_dict.txt')
 pos = p.pos(query)
@@ -31,4 +30,3 @@ print(query)
 print("의도 예측 점수 : ", predict)
 print("의도 예측 클래스 : ", predict_class.numpy())
 print("의도  : ", intent_labels[predict_class.numpy()[0]])
-
