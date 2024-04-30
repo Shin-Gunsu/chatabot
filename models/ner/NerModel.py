@@ -9,7 +9,7 @@ class NerModel:
     def __init__(self, model_name, proprocess):
 
         # BIO 태그 클래스 별 레이블
-        self.index_to_ner = {1: 'O', 2: 'B_DT', 3: 'B_FOOD', 4: 'I', 5: 'B_OG', 6: 'B_PS', 7: 'B_LC', 8: 'NNP', 9: 'B_TI', 0: 'PAD'}
+        self.index_to_ner = {1: 'O', 2: 'B_CLUB', 3: 'B_LOC', 4: 'B_MAJOR', 5: 'B_ORG', 0: 'PAD'}
 
         # 의도 분류 모델 불러오기
         self.model = load_model(model_name)

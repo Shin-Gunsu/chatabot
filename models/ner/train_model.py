@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from tensorflow.keras import preprocessing
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -99,7 +99,7 @@ model.add(Bidirectional(LSTM(200, return_sequences=True, dropout=0.50, recurrent
 model.add(TimeDistributed(Dense(tag_size, activation='softmax')))
 model.compile(loss='categorical_crossentropy', optimizer=Adam(0.01), metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=3, batch_size=128)
+model.fit(x_train, y_train, epochs=10, batch_size=128)
 
 print("평가 결과 : ", model.evaluate(x_test, y_test)[1])
 
