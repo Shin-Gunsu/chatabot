@@ -11,9 +11,9 @@ p = Preprocess(word2index_dic=file_path + '/../train_tools/dict/chatbot_dict.bin
 
 
 ner = NerModel(model_name=file_path + '/../models/ner/ner_model.h5', proprocess=p)
-query = '오늘 오전 13시 2분에 탕수육 하나에 깍두기 주문 하고 싶어요'
+query = '프론티어레코즈 고용서비스정책학과 코인노래방 한기대생활협동조합 컴퓨터공학부'
 predicts = ner.predict(query)
 tags = ner.predict_tags(query)
 print(predicts)
-print(tags)
+
 
