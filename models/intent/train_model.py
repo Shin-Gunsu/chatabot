@@ -80,7 +80,7 @@ pool2 = GlobalMaxPool1D()(conv2)
 
 conv3 = Conv1D(
     filters=128,
-    kernel_size=4,
+    kernel_size=5,
     padding='valid',
     activation=tf.nn.relu)(dropout_emb)
 pool3 = GlobalMaxPool1D()(conv3)
@@ -90,8 +90,8 @@ concat = concatenate([pool1, pool2, pool3])
 
 hidden = Dense(128, activation=tf.nn.relu)(concat)
 dropout_hidden = Dropout(rate=dropout_prob)(hidden)
-logits = Dense(4, name='logits')(dropout_hidden)
-predictions = Dense(4, activation=tf.nn.softmax)(logits)
+logits = Dense(5, name='logits')(dropout_hidden)
+predictions = Dense(5, activation=tf.nn.softmax)(logits)
 
 
 # 모델 생성  ○5

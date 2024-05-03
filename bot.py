@@ -3,34 +3,32 @@ import json
 import sys
 import os
 file_path = os.path.dirname(__file__) 
-sys.path.append(file_path+'../../../')
 
-from config.DatabaseConfig import *
-from utils.Database import Database
+# from config.DatabaseConfig import *
+# from utils.Database import Database
 from utils.BotServer import BotServer
 from utils.Preprocess import Preprocess
 from models.intent.IntentModel import IntentModel
 from models.ner.NerModel import NerModel
 from utils.FindAnswer import FindAnswer
-
+from utils.FindIntent import FindIntent
 
 from utils.Preprocess import Preprocess
 # 전처리 객체 생성
 p = Preprocess(word2index_dic=file_path + '/train_tools/dict/chatbot_dict.bin',
-               userdic=file_path + '/utils/user_dic.tsv')
+               userdic=file_path + '/utils/user_dict.txt')
 
 # 의도 파악 모델
 intent = IntentModel(model_name=file_path + '/models/intent/intent_model.h5', proprocess=p)
-
+print('의도 분류 모델 호출')
 # 개체명 인식 모델
 ner = NerModel(model_name=file_path + '/models/ner/ner_model.h5', proprocess=p)
+print('개체명 인식 모델 호출')
 
-
-def to_client(conn, addr, params):
-    db = params['db']
+def to_client(conn, addr):
 
     try:
-        db.connect()  # 디비 연결
+        # db.connect()  # 디비 연결
 
         # 데이터 수신
         read = conn.recv(2048)  # 수신 데이터가 있을 때 까지 블로킹
@@ -49,50 +47,53 @@ def to_client(conn, addr, params):
         query = recv_json_data['Query']
 
         # 의도 파악
-        intent_predict = intent.predict_class(query)
-        intent_name = intent.labels[intent_predict]
+        intent_model = FindIntent(intent)
+        intent_predict = intent_model.classification(query)
+        
+        if intent_predict[0] == 0 or intent_predict[0] == 3 or intent_predict[0] == 4:
+            #졸업요건, 과제, 과목추천
+            send_json_data_str = {
+                "Intent": intent_predict[1],
+            }
+            message = json.dumps(send_json_data_str)
+            conn.send(message.encode())
 
-        # 개체명 파악
-        ner_predicts = ner.predict(query)
-        ner_tags = ner.predict_tags(query)
+        else :
+            # 개체명 파악
+            ner_predicts = ner.predict(query)
+            ner_tags = ner.predict_tags(query)
 
-
-        # 답변 검색
-        try:
-            f = FindAnswer(db)
-            answer_text, answer_image = f.search(intent_name, ner_tags)
+            # 답변 검색
+            f = FindAnswer()
+            answer_text, answer_image = f.search(intent_predict[1], ner_tags)
             answer = f.tag_to_word(ner_predicts, answer_text)
 
-        except:
-            answer = "죄송해요 무슨 말인지 모르겠어요. 조금 더 공부 할게요."
-            answer_image = None
-
-        send_json_data_str = {
-            "Query" : query,
-            "Answer": answer,
-            "AnswerImageUrl" : answer_image,
-            "Intent": intent_name,
-            "NER": str(ner_predicts)
-        }
-        message = json.dumps(send_json_data_str)
-        conn.send(message.encode())
+            send_json_data_str = {
+                "Query" : query,
+                "Answer": answer,
+                "AnswerImageUrl" : answer_image,
+                "Intent": intent_predict[1],
+                "NER": str(ner_predicts)
+            }
+            message = json.dumps(send_json_data_str)
+            conn.send(message.encode())
 
     except Exception as ex:
         print(ex)
 
-    finally:
-        if db is not None: # db 연결 끊기
-            db.close()
-        conn.close()
+    # finally:
+    #     if db is not None: # db 연결 끊기
+    #         db.close()
+    #     conn.close()
 
 
 if __name__ == '__main__':
 
     # 질문/답변 학습 디비 연결 객체 생성
-    db = Database(
-        host=DB_HOST, user=DB_USER, password=DB_PASSWORD, db_name=DB_NAME
-    )
-    print("DB 접속")
+    # db = Database(
+    #     host=DB_HOST, user=DB_USER, password=DB_PASSWORD, db_name=DB_NAME
+    # )
+    # print("DB 접속")
 
     port = 5050
     listen = 100
@@ -104,13 +105,13 @@ if __name__ == '__main__':
 
     while True:
         conn, addr = bot.ready_for_client()
-        params = {
-            "db": db
-        }
+        # params = {
+        #     "db": db
+        # }
 
         client = threading.Thread(target=to_client, args=(
             conn,
             addr,
-            params
+            # params
         ))
         client.start()
