@@ -1,5 +1,6 @@
 import threading
 import json
+from openai import OpenAI
 import sys
 import os
 file_path = os.path.dirname(__file__) 
@@ -12,8 +13,8 @@ from models.intent.IntentModel import IntentModel
 from models.ner.NerModel import NerModel
 from utils.FindAnswer import FindAnswer
 from utils.FindIntent import FindIntent
-
 from utils.Preprocess import Preprocess
+from utils.gpt import Ansgpt
 # 전처리 객체 생성
 p = Preprocess(word2index_dic=file_path + '/train_tools/dict/chatbot_dict.bin',
                userdic=file_path + '/utils/user_dict.txt')
@@ -24,6 +25,9 @@ print('의도 분류 모델 호출')
 # 개체명 인식 모델
 ner = NerModel(model_name=file_path + '/models/ner/ner_model.h5', proprocess=p)
 print('개체명 인식 모델 호출')
+# gpt 모델
+gpt_model = Ansgpt(OpenAI())
+print('gpt 모델 호출')
 
 def to_client(conn, addr):
 
@@ -66,7 +70,9 @@ def to_client(conn, addr):
             # 답변 검색
             f = FindAnswer()
             answer_text, answer_image = f.search(intent_predict[1], ner_tags)
-            answer = f.tag_to_word(ner_predicts, answer_text)
+            answer_data = f.tag_to_word(ner_predicts, answer_text)
+
+            answer = gpt_model.generate_answer(query,answer_data)
 
             send_json_data_str = {
                 "Query" : query,
