@@ -68,43 +68,27 @@ def to_client(conn, addr):
             # 개체명 파악
             ner_predicts = ner.predict(query)
             ner_tags = ner.predict_tags(query)
+            ner_list = []
+            for keyword, tag in ner_predicts:
+                if tag != 0 and tag != 1:
+                    print(keyword, tag)
+                    ner_list.append(keyword)
 
-            # 답변 검색
-            f = FindAnswer()
-            answer_text, answer_image = f.search(intent_predict[1], ner_tags)
-            answer_data = f.tag_to_word(ner_predicts, answer_text)
-            #랭체인 모델
+            #ASSISTANT 모델
             #thread id는 유저 생길때 마다 새로 부여해야함,유저 종료시 스레드 삭제
             thread_id = ""
-            langchain_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key),thread_id)
+            assistant_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key),thread_id)
+            answer = assistant_model.ask(query)
+            send_json_data_str = {
+                "Query" : answer,
+                "Intent": intent_predict[1],
+                "Ner": ner_list
+            }
+            message = json.dumps(send_json_data_str)
+            conn.send(message.encode())
+            print(send_json_data_str)
 
-            #인식된 개체명이 없다면 현재정보로는 답할수 없는 정보 출력
-            flag = 0
-            for i in ner_tags:
-                if i != 'O' :
-                    flag = 1
-            if flag ==1:
-                answer = langchain_model.ask(query)
-
-                send_json_data_str = {
-                    "Query" : query,
-                    "Answer": answer,
-                    "AnswerImageUrl" : answer_image,
-                    "Intent": intent_predict[1],
-                    "NER": str(ner_predicts)
-                }
-                message = json.dumps(send_json_data_str)
-                conn.send(message.encode())
-            else:
-                send_json_data_str = {
-                    "Query" : query,
-                    "Answer": "현재 정보로는 답할수 없는 정보입니다. 다시 입력해 주십시오.",
-                    "AnswerImageUrl" : answer_image,
-                    "Intent": intent_predict[1],
-                    "NER": str(ner_predicts)
-                }
-                message = json.dumps(send_json_data_str)
-                conn.send(message.encode())
+  
 
     except Exception as ex:
         print(ex)
