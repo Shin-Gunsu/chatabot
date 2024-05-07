@@ -15,7 +15,7 @@ from utils.FindAnswer import FindAnswer
 from utils.FindIntent import FindIntent
 from utils.Preprocess import Preprocess
 from utils.GetAnswer_assistant import GetAnswer_assistant
-from config.GlobalParams import gptapi_key
+from GlobalParams import gptapi_key
 
 # 전처리 객체 생성
 p = Preprocess(word2index_dic=file_path + '/train_tools/dict/chatbot_dict.bin',

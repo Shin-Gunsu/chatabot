@@ -1,5 +1,5 @@
-from config.GlobalParams import assistant_id
-from config.GlobalParams import message_id
+from GlobalParams import assistant_id
+from GlobalParams import message_id
 
 class GetAnswer_assistant:
     def __init__(self,client,thread):
