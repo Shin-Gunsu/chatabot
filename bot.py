@@ -27,11 +27,8 @@ print('의도 분류 모델 호출')
 # 개체명 인식 모델
 ner = NerModel(model_name=file_path + '/models/ner/ner_model.h5', proprocess=p)
 print('개체명 인식 모델 호출')
-#랭체인 모델
-#thread id는 유저 생길때 마다 새로 부여해야함,유저 종료시 스레드 삭제
-thread_id = ""
-langchain_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key),thread_id)
-print('랭체인 호출')
+
+
 
 
 def to_client(conn, addr):
@@ -76,6 +73,10 @@ def to_client(conn, addr):
             f = FindAnswer()
             answer_text, answer_image = f.search(intent_predict[1], ner_tags)
             answer_data = f.tag_to_word(ner_predicts, answer_text)
+            #랭체인 모델
+            #thread id는 유저 생길때 마다 새로 부여해야함,유저 종료시 스레드 삭제
+            thread_id = ""
+            langchain_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key),thread_id)
 
             #인식된 개체명이 없다면 현재정보로는 답할수 없는 정보 출력
             flag = 0
