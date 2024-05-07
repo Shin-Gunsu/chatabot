@@ -11,7 +11,7 @@ from utils.Preprocess import Preprocess
 # 의도 분류 모델 불러오기
 model = load_model(file_path + '/intent_model.h5')
 
-query = "청솔관 어디지?"
+query = "솔빛관 전화번호 알려줘?"
 
 p = Preprocess(word2index_dic=file_path + '/../../train_tools/dict/chatbot_dict.bin',
                userdic= file_path + '/../../utils/user_dict.txt')

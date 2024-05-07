@@ -26,7 +26,6 @@ ner = NerModel(model_name=file_path + '/models/ner/ner_model.h5', proprocess=p)
 print('개체명 인식 모델 호출')
 
 def to_client(conn, addr):
-
     try:
         # db.connect()  # 디비 연결
 
@@ -39,7 +38,6 @@ def to_client(conn, addr):
             # 클라이언트 연결이 끊어지거나, 오류가 있는 경우
             print('클라이언트 연결 끊어짐')
             exit(0)
-
 
         # json 데이터로 변환
         recv_json_data = json.loads(read.decode())
@@ -57,12 +55,20 @@ def to_client(conn, addr):
             }
             message = json.dumps(send_json_data_str)
             conn.send(message.encode())
-
         else :
             # 개체명 파악
             ner_predicts = ner.predict(query)
             ner_tags = ner.predict_tags(query)
+            ner_list = []
 
+            for keyword, tag in ner_predicts:
+                if tag != 0 and tag != 1:
+                    ner_list.append(keyword)
+
+            send_json_data_str = {
+                "Intent": intent_predict[1],
+                "Ner": ner_list
+            }
             # 답변 검색
             f = FindAnswer()
             answer_text, answer_image = f.search(intent_predict[1], ner_tags)

@@ -1,13 +1,25 @@
 from flask import Flask, request, jsonify, abort, render_template
+from flask_cors import CORS
 import socket
 import json
 
 # 챗봇 엔진 서버 정보
 host = "127.0.0.1"      # 챗봇 엔진 서버 IP
 port = 5050             # 챗봇 엔진 port
-
 # Flask 애플리케이션
 app = Flask(__name__)
+CORS(app)
+
+
+@app.route('/transform', methods=['POST'])
+def transform_text():
+    data = request.json
+    received_text = data['text']
+    if received_text == 'hello world': response_text = 'bye world'
+    else: response_text = 'chatbot의 응답입니다.'
+    return jsonify({'response': response_text}) 
+
+
 
 # 챗봇 엔진 서버와 통신
 def get_answer_from_engine(query):
@@ -54,4 +66,4 @@ def hello():
     return '하이룽'
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)
