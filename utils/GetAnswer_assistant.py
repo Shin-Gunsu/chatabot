@@ -23,7 +23,7 @@ class GetAnswer_assistant:
         annotations = message_content.annotations
         citations = []
         for index, annotation in enumerate(annotations):
-          message_content.value = message_content.value.replace(annotation.text, f"[{index}]")
+          message_content.value = message_content.value.replace(annotation.text)
           if file_citation := getattr(annotation, "file_citation", None):
             cited_file = self.client.files.retrieve(file_citation.file_id)
             citations.append(f"[{index}] {cited_file.filename}")
