@@ -14,7 +14,9 @@ from models.ner.NerModel import NerModel
 from utils.FindAnswer import FindAnswer
 from utils.FindIntent import FindIntent
 from utils.Preprocess import Preprocess
-from utils.gpt import Ansgpt
+from utils.GetAnswer_assistant import GetAnswer_assistant
+from config.GlobalParams import gptapi_key
+
 # 전처리 객체 생성
 p = Preprocess(word2index_dic=file_path + '/train_tools/dict/chatbot_dict.bin',
                userdic=file_path + '/utils/user_dict.txt')
@@ -25,9 +27,12 @@ print('의도 분류 모델 호출')
 # 개체명 인식 모델
 ner = NerModel(model_name=file_path + '/models/ner/ner_model.h5', proprocess=p)
 print('개체명 인식 모델 호출')
-# gpt 모델
-gpt_model = Ansgpt(OpenAI())
-print('gpt 모델 호출')
+#랭체인 모델
+#thread id는 유저 생길때 마다 새로 부여해야함,유저 종료시 스레드 삭제
+thread_id = ""
+langchain_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key),thread_id)
+print('랭체인 호출')
+
 
 def to_client(conn, addr):
 
@@ -48,7 +53,7 @@ def to_client(conn, addr):
         # json 데이터로 변환
         recv_json_data = json.loads(read.decode())
         print("데이터 수신 : ", recv_json_data)
-        query = recv_json_data['Query']
+        query = recv_json_data['query']
 
         # 의도 파악
         intent_model = FindIntent(intent)
@@ -72,17 +77,33 @@ def to_client(conn, addr):
             answer_text, answer_image = f.search(intent_predict[1], ner_tags)
             answer_data = f.tag_to_word(ner_predicts, answer_text)
 
-            answer = gpt_model.generate_answer(query,answer_data)
+            #인식된 개체명이 없다면 현재정보로는 답할수 없는 정보 출력
+            flag = 0
+            for i in ner_tags:
+                if i != 'O' :
+                    flag = 1
+            if flag ==1:
+                answer = langchain_model.ask(query)
 
-            send_json_data_str = {
-                "Query" : query,
-                "Answer": answer,
-                "AnswerImageUrl" : answer_image,
-                "Intent": intent_predict[1],
-                "NER": str(ner_predicts)
-            }
-            message = json.dumps(send_json_data_str)
-            conn.send(message.encode())
+                send_json_data_str = {
+                    "Query" : query,
+                    "Answer": answer,
+                    "AnswerImageUrl" : answer_image,
+                    "Intent": intent_predict[1],
+                    "NER": str(ner_predicts)
+                }
+                message = json.dumps(send_json_data_str)
+                conn.send(message.encode())
+            else:
+                send_json_data_str = {
+                    "Query" : query,
+                    "Answer": "현재 정보로는 답할수 없는 정보입니다. 다시 입력해 주십시오.",
+                    "AnswerImageUrl" : answer_image,
+                    "Intent": intent_predict[1],
+                    "NER": str(ner_predicts)
+                }
+                message = json.dumps(send_json_data_str)
+                conn.send(message.encode())
 
     except Exception as ex:
         print(ex)
