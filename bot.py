@@ -109,19 +109,9 @@ def to_client(conn, addr):
     except Exception as ex:
         print(ex)
 
-    # finally:
-    #     if db is not None: # db 연결 끊기
-    #         db.close()
-    #     conn.close()
 
 
 if __name__ == '__main__':
-
-    # 질문/답변 학습 디비 연결 객체 생성
-    # db = Database(
-    #     host=DB_HOST, user=DB_USER, password=DB_PASSWORD, db_name=DB_NAME
-    # )
-    # print("DB 접속")
 
     port = 5050
     listen = 100
@@ -133,13 +123,10 @@ if __name__ == '__main__':
 
     while True:
         conn, addr = bot.ready_for_client()
-        # params = {
-        #     "db": db
-        # }
 
         client = threading.Thread(target=to_client, args=(
             conn,
             addr,
-            # params
+
         ))
         client.start()
