@@ -1,14 +1,14 @@
 from flask import Flask, request, jsonify, abort, render_template
 import socket
 import json
-
+from flask_cors import CORS
 # 챗봇 엔진 서버 정보
 host = "127.0.0.1"      # 챗봇 엔진 서버 IP
 port = 5050             # 챗봇 엔진 port
 
 # Flask 애플리케이션
 app = Flask(__name__)
-
+CORS(app)
 # 챗봇 엔진 서버와 통신
 def get_answer_from_engine(query):
     # 챗봇 엔진 서버 연결
@@ -17,7 +17,7 @@ def get_answer_from_engine(query):
 
     # 챗봇 엔진 질의 요청
     json_data = {
-        'query' : query,
+        'query' : query
     }
     message = json.dumps(json_data)
     mySocket.send(message.encode())

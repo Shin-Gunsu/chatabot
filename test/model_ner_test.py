@@ -11,9 +11,6 @@ p = Preprocess(word2index_dic=file_path + '/../train_tools/dict/chatbot_dict.bin
 
 
 ner = NerModel(model_name=file_path + '/../models/ner/ner_model.h5', proprocess=p)
-query = '프론티어레코즈 고용서비스정책학과 코인노래방 한기대생활협동조합 컴퓨터공학부'
+query = '물리학과 사무실 번호 알려줘'
 predicts = ner.predict(query)
-tags = ner.predict_tags(query)
 print(predicts)
-
-
