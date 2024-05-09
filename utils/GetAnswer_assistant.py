@@ -1,11 +1,11 @@
 from config.GlobalParams import assistant_id
-from config.GlobalParams import message_id
+from config.GlobalParams import file_id
 
 class GetAnswer_assistant:
     def __init__(self,client,thread):
         self.client = client
         self.assistant = assistant_id
-        self.message_file_id = message_id
+        self.message_file_id = file_id
         self.thread = thread
     
     def ask(self,query):
