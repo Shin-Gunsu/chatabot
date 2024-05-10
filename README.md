@@ -8,15 +8,11 @@
 + python == 3.9.19
 + tensorflow == 2.11.0
 + 패키지
-  
+'''
   pip install tesnsorflow
-
   pip install flask
-  
   pip install flask-cors
-  
   pip install kiwipiepy
-  
   pip install openai
-  
   pip install pandas
+'''
