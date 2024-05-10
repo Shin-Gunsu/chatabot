@@ -2,12 +2,12 @@ from config.GlobalParams import assistant_id
 from config.GlobalParams import file_id
 
 class GetAnswer_assistant:
-    def __init__(self,client,thread):
+    def __init__(self,client):
         self.client = client
         self.assistant = assistant_id
         self.message_file_id = file_id
-        self.thread = thread
-    
+        self.thread = self.client.beta.threads.create() 
+
     def ask(self,query):
         thread_message = self.client.beta.threads.messages.create(
           self.thread,

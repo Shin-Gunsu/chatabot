@@ -75,15 +75,14 @@ def to_client(conn, addr):
                     ner_list.append(keyword)
 
             #ASSISTANT 모델
-            #thread id는 유저 생길때 마다 새로 부여해야함,유저 종료시 스레드 삭제
-            thread_id = "thread_JiP6u2A8AuJZzsLAtqHtAUeE"
-            assistant_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key),thread_id)
+            assistant_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key))
             answer = assistant_model.ask(query)
             send_json_data_str = {
                 "Query" : answer,
                 "Intent": intent_predict[1],
                 "Ner": ner_list
             }
+            assistant_model.end_QnA()
             message = json.dumps(send_json_data_str)
             conn.send(message.encode())
             print(send_json_data_str)

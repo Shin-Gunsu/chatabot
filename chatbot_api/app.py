@@ -44,10 +44,7 @@ def query():
         # 오류 발생 시 500 Error
         abort(500)
 
-@app.route('/q',methods = ['POST'])
-def test():
-    body = request.get_json()
-    return jsonify(body)
+
 
 @app.route('/')
 def hello():
