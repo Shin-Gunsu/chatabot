@@ -45,7 +45,6 @@ def query():
         abort(500)
 
 
-
 @app.route('/')
 def hello():
     return '하이룽'

@@ -76,6 +76,7 @@ def to_client(conn, addr):
 
             #ASSISTANT 모델
             assistant_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key))
+            assistant_model.create_thread()
             answer = assistant_model.ask(query)
             send_json_data_str = {
                 "Query" : answer,
