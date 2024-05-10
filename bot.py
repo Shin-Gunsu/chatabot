@@ -76,7 +76,7 @@ def to_client(conn, addr):
 
             #ASSISTANT 모델
             #thread id는 유저 생길때 마다 새로 부여해야함,유저 종료시 스레드 삭제
-            thread_id = "thread_JiP6u2A8AuJZzsLAtqHtAUeE"
+            thread_id = "thread_xx8GzEbXMkj6wQUQ6CqLNNVH"
             assistant_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key),thread_id)
             
             answer = assistant_model.ask(query)
