@@ -78,8 +78,9 @@ def to_client(conn, addr):
             assistant_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key))
             assistant_model.create_thread()
             answer = assistant_model.ask(query)
+            print(answer)
             send_json_data_str = {
-                "Query" : answer,
+                "Answer" : answer,
                 "Intent": intent_predict[1],
                 "Ner": ner_list
             }
