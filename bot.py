@@ -15,6 +15,7 @@ from utils.FindAnswer import FindAnswer
 from utils.FindIntent import FindIntent
 from utils.Preprocess import Preprocess
 from utils.GetAnswer_assistant import GetAnswer_assistant
+from utils.LoginScrap import LoginScrap
 from config.GlobalParams import gptapi_key
 
 # 전처리 객체 생성
@@ -51,18 +52,34 @@ def to_client(conn, addr):
         recv_json_data = json.loads(read.decode())
         print("데이터 수신 : ", recv_json_data)
         query = recv_json_data['query']
+        user_id = recv_json_data['id']
+        user_pw = recv_json_data['pw']
 
         # 의도 파악
         intent_model = FindIntent(intent)
         intent_predict = intent_model.classification(query)
         
-        if intent_predict[0] == 0 or intent_predict[0] == 3 or intent_predict[0] == 4:
+        if intent_predict[0] == 0 or intent_predict[0] == 4:
             #졸업요건, 과제, 과목추천
             send_json_data_str = {
                 "Intent": intent_predict[1],
             }
             message = json.dumps(send_json_data_str)
             conn.send(message.encode())
+
+        elif intent_predict[0] == 3:
+            #과제 스크래핑
+            hwscrap = LoginScrap(user_id, user_pw, 0)
+            r = hwscrap.scrapHW() #list
+            send_string = ""
+            for i in r:
+                send_string = send_string + i + "\n"
+            send_json_data_str = {
+                "Homework" : send_string
+            }
+            message = json.dumps(send_json_data_str)
+            conn.send(message.encode())
+            print(send_json_data_str)
 
         else :
             # 개체명 파악
