@@ -31,12 +31,12 @@ ner = NerModel(model_name=file_path + '/models/ner/ner_model.h5', proprocess=p)
 print('개체명 인식 모델 호출')
 
 
-
+host_response = None
 
 def to_client(conn, addr):
-
+    global host_response
     #로그인 POST 요청 응답
-    host_response = None
+    
     try:
         # db.connect()  # 디비 연결
 
@@ -60,6 +60,7 @@ def to_client(conn, addr):
                         user_pw = recv_json_data['pw']
                         lmc = LoginMakeCookie(user_id, user_pw)
                         host_response = lmc.makeCookie() #쿠키 생성 및 HOST 응답 저장
+                        #print(host_response.text)
                         if host_response is None:
                              print('응답 NULL')
                         else:
@@ -96,13 +97,14 @@ def to_client(conn, addr):
  
              elif intent_predict[0] == 3:
                  #과제 스크래핑
+                 #print(host_response.text)
                  hwscrap = Scrap(host_response, 0)
                  r = hwscrap.scrapHW() #list
                  send_string = ""
                  for i in r:
                      send_string = send_string + i + "\n"
                  send_json_data_str = {
-                     "Homework" : send_string
+                     "Answer" : send_string
                  }
                  print("클라이언트로 수신: ", send_json_data_str)
                  message = json.dumps(send_json_data_str)
