@@ -15,4 +15,5 @@
   pip install kiwipiepy
   pip install openai
   pip install pandas
+  pip install beautifulsoup4 lxml
 ```
