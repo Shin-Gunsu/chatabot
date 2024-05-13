@@ -32,9 +32,10 @@ print('개체명 인식 모델 호출')
 
 
 host_response = None
-
+user_id = ""
 def to_client(conn, addr):
     global host_response
+    global user_id
     #로그인 POST 요청 응답
     
     try:
@@ -60,11 +61,7 @@ def to_client(conn, addr):
                         user_pw = recv_json_data['pw']
                         lmc = LoginMakeCookie(user_id, user_pw)
                         host_response = lmc.makeCookie() #쿠키 생성 및 HOST 응답 저장
-                        #print(host_response.text)
-                        if host_response is None:
-                             print('응답 NULL')
-                        else:
-                             print('응답 NOT NULL')
+
                         if (lmc.isLogin()):
                             send_json_data_str = {
                                 "LoginState": True
@@ -87,19 +84,22 @@ def to_client(conn, addr):
              intent_model = FindIntent(intent)
              intent_predict = intent_model.classification(query)
 
-             if intent_predict[0] == 0 or intent_predict[0] == 4:
+             if intent_predict[0] == 4:
                  #졸업요건, 과제, 과목추천
                  send_json_data_str = {
                      "Intent": intent_predict[1],
                  }
                  message = json.dumps(send_json_data_str)
                  conn.send(message.encode())
- 
+             
+             elif intent_predict[0] == 0:
+                  gradscrap = Scrap()
+                  r = gradscrap.scrapCourseHistory(user_id, 2019) #수강이력 리스트
              elif intent_predict[0] == 3:
                  #과제 스크래핑
                  #print(host_response.text)
-                 hwscrap = Scrap(host_response, 0)
-                 r = hwscrap.scrapHW() #list
+                 hwscrap = Scrap()
+                 r = hwscrap.scrapHW(host_response) #list
                  send_string = ""
                  for i in r:
                      send_string = send_string + i + "\n"
