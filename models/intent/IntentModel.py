@@ -6,7 +6,7 @@ import sys
 import os
 file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
 sys.path.append(file_path+'../../')
-from GlobalParams import MAX_SEQ_LEN
+from config.GlobalParams import MAX_SEQ_LEN
 # 의도 분류 모델 모듈
 class IntentModel:
     def __init__(self, model_name, proprocess):
@@ -35,7 +35,7 @@ class IntentModel:
 
         file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
         sys.path.append(file_path+'../../')
-        from GlobalParams import MAX_SEQ_LEN
+        from config.GlobalParams import MAX_SEQ_LEN
 
         # 패딩처리
         padded_seqs = preprocessing.sequence.pad_sequences(sequences, maxlen=MAX_SEQ_LEN, padding='post')

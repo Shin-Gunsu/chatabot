@@ -17,7 +17,7 @@ from utils.Preprocess import Preprocess
 from utils.GetAnswer_assistant import GetAnswer_assistant
 from utils.Scrap import Scrap
 from utils.LoginMakeCookie import LoginMakeCookie
-from GlobalParams import gptapi_key
+from config.GlobalParams import gptapi_key
 
 # 전처리 객체 생성
 p = Preprocess(word2index_dic=file_path + '/train_tools/dict/chatbot_dict.bin',
@@ -95,7 +95,7 @@ def to_client(conn, addr):
              elif intent_predict[0] == 0:
                   gradscrap = Scrap()
                   r = gradscrap.scrapCourseHistory(user_id, 2019) #수강이력 리스트
-             elif intent_predict[0] == 3:
+             elif intent_predict[0] == 2:
                  #과제 스크래핑
                  #print(host_response.text)
                  hwscrap = Scrap()
