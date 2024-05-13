@@ -7,15 +7,10 @@ import os.path
 from os import path
 
 class Scrap:
-    def __init__(self, response, year):
-        self.year = year
-        self.response = response
-
-
-    def scrapHW(self):
+    def scrapHW(self, response):
         myHW = []
         #과제 가져오기
-        soup = BeautifulSoup(self.response.text, 'lxml')
+        soup = BeautifulSoup(response.text, 'lxml')
         target_element = soup.select('.oklassur-theme.oklassur-skin01 .bg-light')
         for todo in target_element:
             if todo.select_one('a div:nth-child(1)'):
@@ -27,6 +22,32 @@ class Scrap:
                 name = " ".join(todo.select_one('a div:nth-child(3)').text.strip().split(" ")[0:-2])
                 myHW.append(f"과목: {subject} / 과제명 : {name} / 마감일 : {date}")
         return myHW
+    
+    def scrapCourseHistory(self, user_id, start_year):
+        myCourseHistory = []
+        filename = f"./utils/cookietxt/{user_id}.txt"
+        session = requests.Session()
+
+        session.cookies = LWPCookieJar(filename)
+        try:
+            session.cookies.load(ignore_discard=True)
+        except FileNotFoundError:
+        # If the cookie file does not exist, it will be created upon saving
+            pass
+        for year in range(start_year,(datetime.today().year)+1):
+            for semester in [10, 11, 20, 21]:
+                response = session.post(f"https://el2.koreatech.ac.kr/local/lmscourse/index.php?year={year}&semester={semester}")
+                soup = BeautifulSoup(response.text, 'lxml')
+
+                courses = soup.select('.border-top')
+                for course in courses:
+                    if course.select('.courseprofessor'):
+                        if "교수: " in course.select_one('.courseprofessor').text:
+                            myCourseHistory.append(course.select_one('.coursefullname').text)
+        
+        print(len(myCourseHistory))
+        return myCourseHistory
+
 
 
 
