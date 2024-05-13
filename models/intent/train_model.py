@@ -90,8 +90,8 @@ concat = concatenate([pool1, pool2, pool3])
 
 hidden = Dense(128, activation=tf.nn.relu)(concat)
 dropout_hidden = Dropout(rate=dropout_prob)(hidden)
-logits = Dense(5, name='logits')(dropout_hidden)
-predictions = Dense(5, activation=tf.nn.softmax)(logits)
+logits = Dense(4, name='logits')(dropout_hidden)
+predictions = Dense(4, activation=tf.nn.softmax)(logits)
 
 
 # 모델 생성  ○5
