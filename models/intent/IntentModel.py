@@ -1,6 +1,7 @@
 import tensorflow.compat.v1 as tf
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras import preprocessing
+
 import sys
 import os
 
@@ -32,7 +33,7 @@ class IntentModel:
 
         file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
         sys.path.append(file_path+'../../')
-        from config.GlobalParams import MAX_SEQ_LEN
+        from GlobalParams import MAX_SEQ_LEN
 
         # 패딩처리
         padded_seqs = preprocessing.sequence.pad_sequences(sequences, maxlen=MAX_SEQ_LEN, padding='post')

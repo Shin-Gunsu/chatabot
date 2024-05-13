@@ -17,7 +17,7 @@ from utils.Preprocess import Preprocess
 from utils.GetAnswer_assistant import GetAnswer_assistant
 from utils.Scrap import Scrap
 from utils.LoginMakeCookie import LoginMakeCookie
-from config.GlobalParams import gptapi_key
+from GlobalParams import gptapi_key
 
 # 전처리 객체 생성
 p = Preprocess(word2index_dic=file_path + '/train_tools/dict/chatbot_dict.bin',

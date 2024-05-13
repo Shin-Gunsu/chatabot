@@ -1,9 +1,9 @@
 import sys
 import os
 file_path = os.path.dirname(__file__)  # 현재 파일의 절대 경로를 가져옵니다.
-sys.path.append(file_path+'../')
-from config.GlobalParams import assistant_id
-from config.GlobalParams import file_id
+sys.path.append(file_path+'../../')
+from GlobalParams import assistant_id
+from GlobalParams import file_id
 
 class GetAnswer_assistant:
     def __init__(self,client):
