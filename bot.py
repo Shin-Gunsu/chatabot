@@ -19,6 +19,7 @@ from utils.Scrap import Scrap
 from utils.LoginMakeCookie import LoginMakeCookie
 from config.GlobalParams import gptapi_key
 
+
 # 전처리 객체 생성
 p = Preprocess(word2index_dic=file_path + '/train_tools/dict/chatbot_dict.bin',
                userdic=file_path + '/utils/user_dict.txt')
