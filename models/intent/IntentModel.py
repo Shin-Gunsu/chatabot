@@ -30,7 +30,6 @@ class IntentModel:
         keywords = self.p.get_keywords(pos, without_tag=True)
         sequences = [self.p.get_wordidx_sequence(keywords)]
 
-<<<<<<< HEAD
         # 단어 시퀀스 벡터 크기
 
 
@@ -38,8 +37,6 @@ class IntentModel:
         sys.path.append(file_path+'../../')
         from GlobalParams import MAX_SEQ_LEN
 
-=======
->>>>>>> 5d114caf17d33510defc4c60af5670dc0c91654b
         # 패딩처리
         padded_seqs = preprocessing.sequence.pad_sequences(sequences, maxlen=MAX_SEQ_LEN, padding='post')
 
