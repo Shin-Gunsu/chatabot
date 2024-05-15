@@ -86,12 +86,20 @@ def to_client(conn, addr):
              intent_predict = intent_model.classification(query)
 
              if intent_predict[0] == 4:
-                 #졸업요건, 과제, 과목추천
+                 #학식
+                 menuscrap = Scrap()
+                 r = menuscrap.scrapMenu()
+                 send_string = ""
+                 for i in r:
+                     for j in i:
+                        send_string = send_string + j + "\n"
                  send_json_data_str = {
-                     "Intent": intent_predict[1],
+                     "Answer" : send_string
                  }
+                 #print("클라이언트로 수신: ", send_json_data_str)
                  message = json.dumps(send_json_data_str)
                  conn.send(message.encode())
+                 print(send_json_data_str)
              
              elif intent_predict[0] == 0:
                   gradscrap = Scrap()
@@ -101,9 +109,11 @@ def to_client(conn, addr):
                  #print(host_response.text)
                  hwscrap = Scrap()
                  r = hwscrap.scrapHW(host_response) #list
+
                  send_string = ""
                  for i in r:
                      send_string = send_string + i + "\n"
+
                  send_json_data_str = {
                      "Answer" : send_string
                  }
