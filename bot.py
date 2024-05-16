@@ -60,8 +60,65 @@ def send_chat_data(conn,recv_json_data):
         message = json.dumps(send_json_data_str)
         conn.send(message.encode())
         print(send_json_data_str)
+    elif intent_predict[0] == 2:
+        #과제 가져오기
+        '''
+        hwscrap = Scrap()
+        r = hwscrap.scrapHW(host_response)
+        send_string = ""
+        for i in r:
+            send_string = send_string + i + '\n'
+        send_json_data_str = {
+            "Answer" : send_string,
+        }
+        message = json.dumps(send_json_data_str)
+        conn.send(message.encode())
+        '''
+        menuscrap = Scrap()
+        r = menuscrap.scrapMenu()
+        send_string = ""
+        for i in r:
+            for j in i:
+                send_string = send_string + i + '\n'
+        send_json_data_str = {
+            "Answer" : send_string,
+        }
+        message = json.dumps(send_json_data_str)
+        conn.send(message.encode()) 
+    elif intent_predict[0] == 4:
+        #학식 가져오기
+        menuscrap = Scrap()
+        r = menuscrap.scrapMenu()
+        send_string = ""
+        for i in r:
+            for j in i:
+                send_string = send_string + j + '\n'
+        send_json_data_str = {
+            "Answer" : send_string,
+        }
+        message = json.dumps(send_json_data_str)
+        conn.send(message.encode())
+    elif intent_predict[0] == 0:
+        #수강이력 가져오기(일단 졸업요건 레이블 사용)
+        studentnumscrap = Scrap()
+        r = studentnumscrap.scrapStudentNumber(host_response)
+
+        start_year = ''.join(filter(str.isdigit, r))[:4]
+        coursehistoryscrap = Scrap()
+        chlist = coursehistoryscrap.scrapCourseHistory(user_id, int(start_year)) #수강이력 리스트(포맷: 과목명(분반))
+        '''
+        send_string = ""
+        for i in chlist:
+            send_string = send_string + i + '\n'
+        send_json_data_str = {
+            "Answer" : send_string,
+        }
+        message = json.dumps(send_json_data_str)
+        conn.send(message.encode()) 
+        '''
+        
     else :
-        #졸업요건, 과제, 과목추천 의도 보냄
+        #졸업요건, 과목추천 의도 보냄
         send_json_data_str = {
             "Intent": intent_predict[1],
         }
@@ -101,7 +158,10 @@ def to_client(conn, addr):
 
                         if (lmc.isLogin()):
                             send_json_data_str = {
-                                "LoginState": True
+                                "LoginState": True,
+                                "StudentNumber": "",
+                                "Department": "",
+                                "Email": "",
                             }
                         else:
                             send_json_data_str = {

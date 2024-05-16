@@ -7,6 +7,19 @@ import os.path
 from os import path
 
 class Scrap:
+    def scrapStudentNumber(self, response):
+        soup = BeautifulSoup(response.text, 'lxml')
+        target_elements = soup.select('.oklassur-theme .cursor-pointer')
+        studentinfo = ""
+        for element in target_elements:
+            nested_div = element.find('div', class_='d-inline-flex align-items-center')
+            if nested_div:
+                mr_2_div = nested_div.find_next('div', class_='mr-2')
+                if mr_2_div:
+                    
+                    studentinfo = mr_2_div.text.strip()
+        return studentinfo
+
     def scrapMenu(self):
         session = requests.Session()
         response = session.get("https://coop.koreatech.ac.kr/dining/menu.php")
@@ -75,7 +88,7 @@ class Scrap:
                 subject= todo.select_one('a div:nth-child(2)').text
                 # 과제명
                 name = " ".join(todo.select_one('a div:nth-child(3)').text.strip().split(" ")[0:-2])
-                myHW.append(f"과목: {subject} / 과제명 : {name} / 마감일 : {date}")
+                myHW.append(f"과목: {subject}\n과제명 : {name}\n마감일 : {date}\n")
         return myHW
     
     def scrapCourseHistory(self, user_id, start_year):
@@ -100,7 +113,8 @@ class Scrap:
                         if "교수: " in course.select_one('.courseprofessor').text:
                             myCourseHistory.append(course.select_one('.coursefullname').text)
         
-        print(len(myCourseHistory))
+        for i in myCourseHistory:
+            print(i)
         return myCourseHistory
 
 
