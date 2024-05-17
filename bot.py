@@ -62,7 +62,7 @@ def send_chat_data(conn,recv_json_data):
         print(send_json_data_str)
     elif intent_predict[0] == 2:
         #과제 가져오기
-        '''
+        
         hwscrap = Scrap()
         r = hwscrap.scrapHW(host_response)
         send_string = ""
@@ -73,28 +73,17 @@ def send_chat_data(conn,recv_json_data):
         }
         message = json.dumps(send_json_data_str)
         conn.send(message.encode())
-        '''
-        menuscrap = Scrap()
-        r = menuscrap.scrapMenu()
-        send_string = ""
-        for i in r:
-            for j in i:
-                send_string = send_string + i + '\n'
-        send_json_data_str = {
-            "Answer" : send_string,
-        }
-        message = json.dumps(send_json_data_str)
-        conn.send(message.encode()) 
+        
     elif intent_predict[0] == 4:
         #학식 가져오기
         menuscrap = Scrap()
         r = menuscrap.scrapMenu()
         send_string = ""
         for i in r:
-            for j in i:
-                send_string = send_string + j + '\n'
+            send_string = send_string + i + '\n'
         send_json_data_str = {
             "Answer" : send_string,
+            "Link": "https://coop.koreatech.ac.kr/dining/menu.php"
         }
         message = json.dumps(send_json_data_str)
         conn.send(message.encode())
@@ -106,6 +95,8 @@ def send_chat_data(conn,recv_json_data):
         start_year = ''.join(filter(str.isdigit, r))[:4]
         coursehistoryscrap = Scrap()
         chlist = coursehistoryscrap.scrapCourseHistory(user_id, int(start_year)) #수강이력 리스트(포맷: 과목명(분반))
+        for i in chlist:
+            print(i)
         '''
         send_string = ""
         for i in chlist:
@@ -155,13 +146,14 @@ def to_client(conn, addr):
                         user_pw = recv_json_data['pw']
                         lmc = LoginMakeCookie(user_id, user_pw)
                         host_response = lmc.makeCookie() #쿠키 생성 및 HOST 응답 저장
-
+                        studentnumscrap = Scrap()
+                        r = studentnumscrap.scrapStudentNumber(host_response)
                         if (lmc.isLogin()):
                             send_json_data_str = {
                                 "LoginState": True,
-                                "StudentNumber": "",
-                                "Department": "",
+                                "StudentNumber": r,
                                 "Email": "",
+                                "CourseHistory": "",
                             }
                         else:
                             send_json_data_str = {
