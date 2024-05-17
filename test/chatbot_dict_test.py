@@ -10,7 +10,7 @@ f = open(file_path + "/../train_tools/dict/chatbot_dict.bin", "rb")
 word_index = pickle.load(f)
 f.close()
 
-sent = "컴공 과제 개많고 ㅋㅋ"
+sent = "학식 뭐임 ㅋㅋ"
 
 # 전처리 객체 생성
 p = Preprocess(userdic=file_path + '/../utils/user_dict.txt')

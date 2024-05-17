@@ -76,8 +76,6 @@ def to_client(conn, addr):
     #로그인 POST 요청 응답
     
     try:
-        # db.connect()  # 디비 연결
-
         # 데이터 수신
         read = conn.recv(2048)  # 수신 데이터가 있을 때 까지 블로킹
         print('===========================')
@@ -114,7 +112,7 @@ def to_client(conn, addr):
                         print(user_id)
                         print(user_pw)
         else:
-            
+            #챗봇 
             send_chat_data(conn,recv_json_data)
  
    

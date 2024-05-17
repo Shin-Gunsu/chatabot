@@ -39,7 +39,7 @@ class IntentModel:
 
         # 패딩처리
         padded_seqs = preprocessing.sequence.pad_sequences(sequences, maxlen=MAX_SEQ_LEN, padding='post')
-
         predict = self.model.predict(padded_seqs)
         predict_class = tf.math.argmax(predict, axis=1)
+        print(predict)
         return predict_class.numpy()[0]

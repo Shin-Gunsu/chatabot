@@ -7,4 +7,4 @@ f = open(file_path + "/chatbot_dict.bin", "rb")
 word_index = pickle.load(f)
 f.close()
 
-print(word_index['밥버러지'])
+print(word_index['학식'])

@@ -1,13 +1,12 @@
 import csv
 from random import  *
-from konlpy.tag import Komoran
 import sys
 import os
 file_path = os.path.dirname(__file__) 
 sys.path.append(file_path+'../../../')
 from utils.Preprocess import Preprocess
 
-sent_file = file_path +'/cnnTraindata.csv'
+sent_file = file_path +'/menu.csv'
 
 pre = Preprocess(word2index_dic=file_path + '/../../train_tools/dict/chatbot_dict.bin',
                userdic=file_path + '/../../utils/user_dict.txt')

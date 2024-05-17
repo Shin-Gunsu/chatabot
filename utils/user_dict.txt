@@ -1,8 +1,4 @@
-# 의도분류 : QnA, 강의추천, 과제
-# QnA를 위한 객체명 인식을 위한 형태소 분석을 위한 사전 정의
-# (강의명 - 일단 지금 당장 쓸 데 없음)
-
-# 기숙사
+한기대	NNG
 기숙사	NNG
 긱사	NNG
 101동	NNG
@@ -45,8 +41,6 @@ IH관	NNG
 관리동	NNG
 스마일박스	NNG
 택배	NNG
-
-# 건물(학부사무실, 학부실, R&D, 노래방 등 여러 시설)
 우체국	NNG
 복사실	NNG
 노래방	NNG
@@ -88,8 +82,6 @@ GS	NNG
 나래돔	NNG
 R&D	NNG
 텔동	NNG
-
-# 대학 조직
 기획예산팀	NNG
 전략평가팀	NNG
 인권센터	NNG
@@ -126,8 +118,6 @@ IPP	NNG
 학술정보팀	NNG
 정보화운영팀	NNG
 산학협력단	NNG
-
-# 동아리 이름
 K-오케스트라	NNG
 케이오케스트라	NNG
 ZEST	NNG
@@ -173,8 +163,6 @@ BCSDLab	NNG
 로봇사랑	NNG
 세페우스	NNG
 자연인	NNG
-
-# 학부
 기계공학부	NNG
 메카트로닉스공학부	NNG
 전기전자통신공학부	NNG
@@ -199,3 +187,4 @@ HRD학과	NNG
 교양	NNG
 흐르드	NNG
 융합	NNG
+학식	NNG
