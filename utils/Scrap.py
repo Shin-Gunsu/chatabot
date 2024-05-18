@@ -58,13 +58,13 @@ class Scrap:
             tr_morning = soup.find_all('tr')[4]
             tds = tr_morning.find_all('td')
             a_corner = tds[1].text.strip()
-            a_corner = "★아침★\n"+"========================\n"+"A코너: \n" + a_corner
+            a_corner = "★아침★\n"+"========================\n"+"A코너: \n" + self.handleNomenu(a_corner)
             b_corner = tds[2].text.strip()
-            b_corner = "\nB코너: \n" + b_corner
+            b_corner = "\nB코너: \n" + self.handleNomenu(b_corner)
             c_corner = tds[3].text.strip()
-            c_corner = "\nC코너: \n" + c_corner
+            c_corner = "\nC코너: \n" + self.handleNomenu(c_corner)
             n_corner = tds[5].text.strip()
-            n_corner = "\n능수관: \n" + n_corner+"\n========================"+"\n\n<전체 메뉴 보러가기>\n"
+            n_corner = "\n능수관: \n" + self.handleNomenu(n_corner)+"\n========================"+"\n<전체 메뉴 보러가기>"
             allcornermenus = [a_corner, b_corner, c_corner, n_corner]
         #점심 메뉴 가져오기(질문시각: 10~14시)
         elif 10 <= datetime.today().hour < 15:
@@ -77,20 +77,20 @@ class Scrap:
             c_corner = tds[3].text.strip()
             c_corner = "\nC코너: \n" + self.handleNomenu(c_corner)
             n_corner = tds[5].text.strip()
-            n_corner = "\n능수관: \n" + self.handleNomenu(n_corner)+"\n========================"+"\n\n<전체 메뉴 보러가기>"
+            n_corner = "\n능수관: \n" + self.handleNomenu(n_corner)+"\n========================"+"\n<전체 메뉴 보러가기>"
             allcornermenus = [a_corner, b_corner, c_corner, n_corner]
         #저녁 메뉴 가져오기(질문시각: 15~23시)
         elif 15 <= datetime.today().hour <= 23:
             tr_dinner = soup.find_all('tr')[6]
             tds = tr_dinner.find_all('td')
             a_corner = tds[1].text.strip()
-            a_corner = "★저녁★\n"+"========================\n"+"A코너: \n" + a_corner
+            a_corner = "★저녁★\n"+"========================\n"+"A코너: \n" + self.handleNomenu(a_corner)
             b_corner = tds[2].text.strip()
-            b_corner = "\nB코너: \n" + b_corner
+            b_corner = "\nB코너: \n" + self.handleNomenu(b_corner)
             c_corner = tds[3].text.strip()
-            c_corner = "\nC코너: \n" + c_corner
+            c_corner = "\nC코너: \n" + self.handleNomenu(c_corner)
             n_corner = tds[5].text.strip()
-            n_corner = "\n능수관: \n" + n_corner+"\n========================"+"\n\n<전체 메뉴 보러가기>\n"
+            n_corner = "\n능수관: \n" + self.handleNomenu(n_corner)+"\n========================"+"\n<전체 메뉴 보러가기>"
             allcornermenus = [a_corner, b_corner, c_corner, n_corner]
         
         session.close()
