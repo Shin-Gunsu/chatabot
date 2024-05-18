@@ -56,7 +56,7 @@ def login():
         message = json.dumps(body)
         mySocket.send(message.encode())
 
-        data = mySocket.recv(2048).decode()
+        data = mySocket.recv(4096).decode(encoding="euc-kr")
         print(data)
         ret_data = json.loads(data)
         print(ret_data)

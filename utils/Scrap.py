@@ -7,6 +7,27 @@ import os.path
 from os import path
 
 class Scrap:
+    def scrapEmail(self, user_id):
+        myEmail = ""
+        filename = f"./utils/cookietxt/{user_id}.txt"
+        session = requests.Session()
+
+        session.cookies = LWPCookieJar(filename)
+        try:
+            session.cookies.load(ignore_discard=True)
+        except FileNotFoundError:
+        # If the cookie file does not exist, it will be created upon saving
+            pass
+        response = session.post("https://el2.koreatech.ac.kr/user/profile.php")
+        soup = BeautifulSoup(response.text, 'lxml')
+
+        cards = soup.select('.card-body')
+        for card in cards:
+            if card.select('.editprofile'):
+                myEmail = card.select_one('dd').text.strip()
+
+        return myEmail
+
     def scrapStudentNumber(self, response):
         soup = BeautifulSoup(response.text, 'lxml')
         target_elements = soup.select('.oklassur-theme .cursor-pointer')

@@ -147,13 +147,18 @@ def to_client(conn, addr):
                         lmc = LoginMakeCookie(user_id, user_pw)
                         host_response = lmc.makeCookie() #쿠키 생성 및 HOST 응답 저장
                         studentnumscrap = Scrap()
-                        r = studentnumscrap.scrapStudentNumber(host_response)
+                        studentnum = studentnumscrap.scrapStudentNumber(host_response)
+                        emailscrap = Scrap()
+                        email = emailscrap.scrapEmail(user_id)
+                        start_year = ''.join(filter(str.isdigit, studentnum))[:4]
+                        coursehistoryscrap = Scrap()
+                        coursehistory = coursehistoryscrap.scrapCourseHistory(user_id, int(start_year))
                         if (lmc.isLogin()):
                             send_json_data_str = {
                                 "LoginState": True,
-                                "StudentNumber": r,
-                                "Email": "",
-                                "CourseHistory": "",
+                                "StudentNumber": studentnum,
+                                "Email": email,
+                                "CourseHistory": coursehistory,
                             }
                         else:
                             send_json_data_str = {
