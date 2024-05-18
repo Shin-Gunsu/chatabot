@@ -40,6 +40,7 @@ def send_chat_data(conn,recv_json_data):
     
     if intent_predict[0] == 1:
         # QnA
+        print(12)
         ner_predicts = ner.predict(query)
         ner_list = []
         for keyword, tag in ner_predicts:
@@ -57,8 +58,6 @@ def send_chat_data(conn,recv_json_data):
         print(answer)
         send_json_data_str = {
             "Answer" : answer,
-            "Intent": intent_predict[1],
-            "Ner": ner_list,
             "Img":img_set
         }
         assistant_model.end_QnA()
@@ -67,20 +66,24 @@ def send_chat_data(conn,recv_json_data):
         print(send_json_data_str)
     elif intent_predict[0] == 2:
         #과제 가져오기
+        print(34)
         
         hwscrap = Scrap()
         r = hwscrap.scrapHW(host_response)
+        print(r)
         send_string = ""
         for i in r:
             send_string = send_string + i + '\n'
         send_json_data_str = {
             "Answer" : send_string,
+            "Img": ""
         }
         message = json.dumps(send_json_data_str)
         conn.send(message.encode())
         
     elif intent_predict[0] == 4:
         #학식 가져오기
+        print(56)
         menuscrap = Scrap()
         r = menuscrap.scrapMenu()
         send_string = ""
@@ -93,6 +96,7 @@ def send_chat_data(conn,recv_json_data):
         message = json.dumps(send_json_data_str)
         conn.send(message.encode())
     elif intent_predict[0] == 0:
+        print(78)
         #수강이력 가져오기(일단 졸업요건 레이블 사용)
         studentnumscrap = Scrap()
         r = studentnumscrap.scrapStudentNumber(host_response)
@@ -149,14 +153,15 @@ def to_client(conn, addr):
                         user_pw = recv_json_data['pw']
                         lmc = LoginMakeCookie(user_id, user_pw)
                         host_response = lmc.makeCookie() #쿠키 생성 및 HOST 응답 저장
-                        studentnumscrap = Scrap()
-                        studentnum = studentnumscrap.scrapStudentNumber(host_response)
-                        emailscrap = Scrap()
-                        email = emailscrap.scrapEmail(user_id)
-                        start_year = ''.join(filter(str.isdigit, studentnum))[:4]
-                        coursehistoryscrap = Scrap()
-                        coursehistory = coursehistoryscrap.scrapCourseHistory(user_id, int(start_year))
+                        #print(host_response.text)
                         if (lmc.isLogin()):
+                            studentnumscrap = Scrap()
+                            studentnum = studentnumscrap.scrapStudentNumber(host_response)
+                            emailscrap = Scrap()
+                            email = emailscrap.scrapEmail(user_id)
+                            start_year = ''.join(filter(str.isdigit, studentnum))[:4]
+                            coursehistoryscrap = Scrap()
+                            coursehistory = coursehistoryscrap.scrapCourseHistory(user_id, int(start_year))
                             send_json_data_str = {
                                 "LoginState": True,
                                 "StudentNumber": studentnum,

@@ -25,8 +25,9 @@ def get_answer_from_engine(query):
 
     # 챗봇 엔진 답변 출력
     data = mySocket.recv(2048).decode()
+    print(data)
     ret_data = json.loads(data)
-
+    print(ret_data)
     # 챗봇 엔진 서버 연결 소켓 닫기
     mySocket.close()
 
@@ -57,9 +58,9 @@ def login():
         mySocket.send(message.encode())
 
         data = mySocket.recv(4096).decode(encoding="euc-kr")
-        print(data)
+        #print(data)
         ret_data = json.loads(data)
-        print(ret_data)
+        #print(ret_data)
         mySocket.close()
         
 
