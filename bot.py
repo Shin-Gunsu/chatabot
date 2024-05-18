@@ -50,11 +50,16 @@ def send_chat_data(conn,recv_json_data):
         assistant_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key))
         assistant_model.create_thread()
         answer = assistant_model.ask(query)
+        img_set =""
+        if ("캠퍼스" in answer or "지도" in answer) and "위치하고" in answer:
+            img_set = "map"
+
         print(answer)
         send_json_data_str = {
             "Answer" : answer,
             "Intent": intent_predict[1],
-            "Ner": ner_list
+            "Ner": ner_list,
+            "Img":img_set
         }
         assistant_model.end_QnA()
         message = json.dumps(send_json_data_str)

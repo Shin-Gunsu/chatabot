@@ -27,7 +27,7 @@ while True:
     # 챗봇 엔진 답변 출력
     data = mySocket.recv(2048).decode()
     ret_data = json.loads(data)
-    if(ret_data['Intent']==1 or ret_data['Intent']==2):
+    if(ret_data['Intent']==1):
         print("답변 : ")
         print(ret_data['Answer'])
         print(ret_data)
