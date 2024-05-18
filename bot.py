@@ -50,11 +50,16 @@ def send_chat_data(conn,recv_json_data):
         assistant_model = GetAnswer_assistant(OpenAI(api_key=gptapi_key))
         assistant_model.create_thread()
         answer = assistant_model.ask(query)
+        img_set =""
+        if ("캠퍼스" in answer or "지도" in answer) and "위치하고" in answer:
+            img_set = "map"
+
         print(answer)
         send_json_data_str = {
             "Answer" : answer,
             "Intent": intent_predict[1],
-            "Ner": ner_list
+            "Ner": ner_list,
+            "Img":img_set
         }
         assistant_model.end_QnA()
         message = json.dumps(send_json_data_str)
@@ -124,8 +129,6 @@ def to_client(conn, addr):
     #로그인 POST 요청 응답
     
     try:
-        # db.connect()  # 디비 연결
-
         # 데이터 수신
         read = conn.recv(2048)  # 수신 데이터가 있을 때 까지 블로킹
         print('===========================')
@@ -171,7 +174,7 @@ def to_client(conn, addr):
                         print(user_id)
                         print(user_pw)
         else:
-            
+            #챗봇 
             send_chat_data(conn,recv_json_data)
  
    

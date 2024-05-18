@@ -10,10 +10,11 @@ p = Preprocess(word2index_dic=file_path+'/../train_tools/dict/chatbot_dict.bin',
                userdic=file_path + '/../utils/user_dict.txt')
 
 intent = IntentModel(model_name=file_path + '/../models/intent/intent_model.h5', proprocess=p)
-query = "점심"
+query = "학식 뭐야"
 predict = intent.predict_class(query)
 predict_label = intent.labels[predict]
 
 print(query)
+
 print("의도 예측 클래스 : ", predict)
 print("의도 예측 레이블 : ", predict_label)

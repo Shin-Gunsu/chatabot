@@ -44,9 +44,9 @@ print(len(intents)) #105658
 ds = tf.data.Dataset.from_tensor_slices((padded_seqs, intents))
 ds = ds.shuffle(len(queries))
 
-train_size = int(len(padded_seqs) * 0.7)
-val_size = int(len(padded_seqs) * 0.2)
-test_size = int(len(padded_seqs) * 0.1)
+train_size = int(len(padded_seqs)*0.9)
+val_size = int(len(padded_seqs) * 0.05)
+test_size = int(len(padded_seqs) * 0.05)
 
 train_ds = ds.take(train_size).batch(20)
 val_ds = ds.skip(train_size).take(val_size).batch(20)
@@ -55,7 +55,7 @@ test_ds = ds.skip(train_size + val_size).take(test_size).batch(20)
 # 하이퍼 파라미터 설정
 dropout_prob = 0.5
 EMB_SIZE = 128
-EPOCH = 5
+EPOCH = 10
 VOCAB_SIZE = len(p.word_index) + 1 #전체 단어 개수
 
 
@@ -107,10 +107,10 @@ model.fit(train_ds, validation_data=val_ds, epochs=EPOCH, verbose=1)
 
 # 모델 평가(테스트 데이터 셋 이용) ○7
 loss, accuracy = model.evaluate(test_ds, verbose=1)
+model.save(file_path + '/intent_model.h5')
 print('Accuracy: %f' % (accuracy * 100))
 print('loss: %f' % (loss))
 
 
-# 모델 저장  ○8
-model.save(file_path + '/intent_model.h5')
+
 
