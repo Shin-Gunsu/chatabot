@@ -7,7 +7,7 @@ word_file = file_path + '/keyword.csv'
 word_file2 =file_path + '/keyword2.csv'
 word_file3 = file_path + '/keyword3.csv'
 
-output_file = file_path + '/menu.csv'
+output_file = file_path + '/suttle.csv'
 
 with open(output_file, mode='w',newline='', encoding='utf-8') as f_out:
     with open(word_file, mode='r', encoding='utf-8') as f1:
@@ -22,5 +22,5 @@ with open(output_file, mode='w',newline='', encoding='utf-8') as f_out:
                     with open(word_file3, mode="r", encoding="utf-8") as qf:
                         qreader = csv.reader(qf)
                         for j, qrow in enumerate(qreader):
-                            q = word + ' ' + qrow[0] + ',4\n'
+                            q = word + ' ' + qrow[0] + ',5\n'
                             f_out.write(q)
