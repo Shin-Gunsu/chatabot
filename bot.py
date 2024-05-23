@@ -152,32 +152,34 @@ def to_client(conn, addr):
                         user_id = recv_json_data['id']
                         user_pw = recv_json_data['pw']
                         lmc = LoginMakeCookie(user_id, user_pw)
-                        host_response = lmc.makeCookie() #쿠키 생성 및 HOST 응답 저장
-                        #print(host_response.text)
-                        if (lmc.isLogin()):
-                            studentnumscrap = Scrap()
-                            studentnum = studentnumscrap.scrapStudentNumber(host_response)
-                            emailscrap = Scrap()
-                            email = emailscrap.scrapEmail(user_id)
-                            start_year = ''.join(filter(str.isdigit, studentnum))[:4]
-                            coursehistoryscrap = Scrap()
-                            coursehistory = coursehistoryscrap.scrapCourseHistory(user_id, int(start_year))
-                            send_json_data_str = {
-                                "LoginState": True,
-                                "StudentNumber": studentnum,
-                                "Email": email,
-                                "CourseHistory": coursehistory,
-                            }
+                        if user_pw == "logout":
+                            lmc.logout()
                         else:
-                            send_json_data_str = {
-                                "LoginState": False
-                            }
-                        
+                            host_response = lmc.makeCookie() #쿠키 생성 및 HOST 응답 저장
 
-                        message = json.dumps(send_json_data_str)
-                        conn.send(message.encode())
-                        print(user_id)
-                        print(user_pw)
+                            if (lmc.isLogin()):
+                                studentnumscrap = Scrap()
+                                studentnum = studentnumscrap.scrapStudentNumber(host_response)
+                                emailscrap = Scrap()
+                                email = emailscrap.scrapEmail(user_id)
+                                start_year = ''.join(filter(str.isdigit, studentnum))[:4]
+                                coursehistoryscrap = Scrap()
+                                coursehistory = coursehistoryscrap.scrapCourseHistory(user_id, int(start_year))
+                                send_json_data_str = {
+                                    "LoginState": True,
+                                    "StudentNumber": studentnum,
+                                    "Email": email,
+                                    "CourseHistory": coursehistory,
+                                }
+                            else:
+                                send_json_data_str = {
+                                    "LoginState": False
+                                }
+                            
+
+                            message = json.dumps(send_json_data_str)
+                            conn.send(message.encode())
+
         else:
             #챗봇 
             send_chat_data(conn,recv_json_data)

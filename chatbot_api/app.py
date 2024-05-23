@@ -70,6 +70,30 @@ def login():
         # 오류 발생 시 500 Error
         abort(500)
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    body = request.get_json()
+    try:
+        # bot서버로 id, pw전달
+        
+        mySocket = socket.socket()
+        mySocket.connect((host, port))
+        message = json.dumps(body)
+        mySocket.send(message.encode())
+
+        data = mySocket.recv(4096).decode(encoding="euc-kr")
+        #print(data)
+        ret_data = json.loads(data)
+        #print(ret_data)
+        mySocket.close()
+        
+
+        return jsonify(ret_data)
+
+    except Exception as ex:
+        # 오류 발생 시 500 Error
+        abort(500)
+
 
 @app.route('/')
 def hello():
