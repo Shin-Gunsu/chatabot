@@ -55,3 +55,9 @@ class LoadLectureData:
             for j in self.getLectureForCode(i['courses']):
                 result.append(j)
         return result
+    
+    def getCode(self, name):
+        for lecture in self.lecture_list:
+            if lecture[1] == name:
+                return lecture[0]
+        return ""

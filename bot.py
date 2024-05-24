@@ -4,7 +4,6 @@ from openai import OpenAI
 import sys
 import os
 file_path = os.path.dirname(__file__) 
-from datetime import datetime, timedelta
 
 # from config.DatabaseConfig import *
 # from utils.Database import Database
@@ -19,7 +18,6 @@ from utils.GetAnswer_assistant import GetAnswer_assistant
 from utils.Scrap import Scrap
 from utils.LoginMakeCookie import LoginMakeCookie
 from config.GlobalParams import gptapi_key
-from utils.LoadLectureData import LoadLectureData
 
 
 # 전처리 객체 생성
@@ -32,73 +30,6 @@ print('의도 분류 모델 호출')
 # 개체명 인식 모델
 ner = NerModel(model_name=file_path + '/models/ner/ner_model.h5', proprocess=p)
 print('개체명 인식 모델 호출')
-
-#3개월 이상된 쿠키 파일 자동 삭제
-def old_cookie_remover():
-    directory = "./utils/cookietxt"
-    if not os.path.exists(directory):
-        print(f"디렉토리가 존재하지 않습니다: {directory}")
-        return
-    
-    three_months = timedelta(days=90)
-    current_time = datetime.now()
-    files_deleted = 0  # 삭제된 파일 수 카운트
-
-    for filename in os.listdir(directory):
-        file_path = os.path.join(directory, filename)
-        file_stat = os.stat(file_path)
-        file_creation_time = datetime.fromtimestamp(file_stat.st_mtime)
-
-        if current_time - file_creation_time > three_months:
-            os.remove(file_path)
-            files_deleted += 1
-            print(f"{file_path} 삭제됨: 3개월 이상된 파일.")
-
-    if files_deleted == 0:
-        print("삭제할 3개월 이상된 파일이 없습니다.")
-    else:
-        print(f"총 {files_deleted}개의 파일이 삭제되었습니다.")
-
-def send_lecture_data(conn,recv_json_data):
-    department_list = []
-    send_list = []
-    error_msg = ""
-    selected_department = recv_json_data['selectedDepartment']
-    print(selected_department)
-    load_lecture_data = LoadLectureData()
-    department_list = load_lecture_data.getDepartmentList(selected_department)
-
-    if len(department_list) > 0:
-        error_msg = ""
-        for lecture in department_list:
-            json_lecture = {
-                "id" : lecture[0],
-                "name":lecture[1],
-                "professor": lecture[2],
-                "grade": lecture[3],
-                "credit": lecture[4],
-                "type1": lecture[5],
-                "type2": lecture[6],
-                "targetDepartment": lecture[7],
-                "target": lecture[8],
-                "time": lecture[9],
-                "place": lecture[10],
-                "creditDetail": lecture[11],
-                "limit": lecture[12],
-                "timeData": lecture[13]
-            }
-            send_list.append(json_lecture)
-    else:
-        error_msg = "해당 학부는 개설된 강의가 없습니다."
-
-
-    send_json_data_str = {
-        "courses": send_list,
-        "error": error_msg
-    }
-    message = json.dumps(send_json_data_str)
-    message += "\n"
-    conn.send(message.encode())
 
 #chat에서 받은 데이터 
 def send_chat_data(conn,recv_json_data):
@@ -248,8 +179,7 @@ def to_client(conn, addr):
 
                             message = json.dumps(send_json_data_str)
                             conn.send(message.encode())
-        elif "selectedDepartment" in recv_json_data:
-            send_lecture_data(conn,recv_json_data)
+
         else:
             #챗봇 
             send_chat_data(conn,recv_json_data)
@@ -270,9 +200,6 @@ if __name__ == '__main__':
     bot = BotServer(port, listen)
     bot.create_sock()
     print("bot start")
-    print("3개월 이상된 쿠키 확인")
-    old_cookie_remover()
-    
 
     while True:
         conn, addr = bot.ready_for_client()
@@ -280,6 +207,5 @@ if __name__ == '__main__':
         client = threading.Thread(target=to_client, args=(
             conn,
             addr,
-
         ))
         client.start()
