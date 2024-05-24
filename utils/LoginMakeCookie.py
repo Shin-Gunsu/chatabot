@@ -1,6 +1,8 @@
 import requests
-from http.cookiejar import LWPCookieJar
+from http.cookiejar import LWPCookieJar, Cookie
+from datetime import datetime, timedelta
 import os
+import time
 
 
 
@@ -34,11 +36,11 @@ class LoginMakeCookie:
             pass
 
         response = session.post(self.login_url, data=self.login_data, headers=self.headers)
-        print(response.status_code)
+        #print(response.status_code)
         session.cookies.save(ignore_discard=True)
 
         self.callback_url = response.url
-        print(self.callback_url)
+        #print(self.callback_url)
         session.close()
 
         return response #el페이지 HOST 응답

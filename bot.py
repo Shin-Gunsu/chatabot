@@ -4,6 +4,7 @@ from openai import OpenAI
 import sys
 import os
 file_path = os.path.dirname(__file__) 
+from datetime import datetime, timedelta
 
 # from config.DatabaseConfig import *
 # from utils.Database import Database
@@ -30,6 +31,32 @@ print('의도 분류 모델 호출')
 # 개체명 인식 모델
 ner = NerModel(model_name=file_path + '/models/ner/ner_model.h5', proprocess=p)
 print('개체명 인식 모델 호출')
+
+#3개월 이상된 쿠키 파일 자동 삭제
+def old_cookie_remover():
+    directory = "./utils/cookietxt"
+    if not os.path.exists(directory):
+        print(f"디렉토리가 존재하지 않습니다: {directory}")
+        return
+    
+    three_months = timedelta(seconds=60)
+    current_time = datetime.now()
+    files_deleted = 0  # 삭제된 파일 수 카운트
+
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        file_stat = os.stat(file_path)
+        file_creation_time = datetime.fromtimestamp(file_stat.st_mtime)
+
+        if current_time - file_creation_time > three_months:
+            os.remove(file_path)
+            files_deleted += 1
+            print(f"{file_path} 삭제됨: 3개월 이상된 파일.")
+
+    if files_deleted == 0:
+        print("삭제할 3개월 이상된 파일이 없습니다.")
+    else:
+        print(f"총 {files_deleted}개의 파일이 삭제되었습니다.")
 
 #chat에서 받은 데이터 
 def send_chat_data(conn,recv_json_data):
@@ -200,6 +227,9 @@ if __name__ == '__main__':
     bot = BotServer(port, listen)
     bot.create_sock()
     print("bot start")
+    print("3개월 이상된 쿠키 확인")
+    old_cookie_remover()
+    
 
     while True:
         conn, addr = bot.ready_for_client()
