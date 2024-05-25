@@ -134,6 +134,12 @@ def load():
         print(ex)
         abort(500)
 
+# recommand 
+@app.route('/recommend', methods=['GET'])
+def recommand():
+    body = request.get_json()
+
+
 @app.route('/')
 def hello():
     return '하이룽'
