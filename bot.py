@@ -18,7 +18,7 @@ from utils.GetAnswer_assistant import GetAnswer_assistant
 from utils.Scrap import Scrap
 from utils.LoginMakeCookie import LoginMakeCookie
 from config.GlobalParams import gptapi_key
-
+from models.recommender import Recommender
 
 # 전처리 객체 생성
 p = Preprocess(word2index_dic=file_path + '/train_tools/dict/chatbot_dict.bin',
@@ -125,6 +125,16 @@ def send_chat_data(conn,recv_json_data):
         message = json.dumps(send_json_data_str)
         conn.send(message.encode())
 
+def get_lecture_recommend(conn,host_response,user_id):
+    a = Recommender('../models/recommender/lecture_dic.txt','../models/recommender/lecture_model.bin')
+    input_list = a.get_input_list(host_response,user_id)
+    data = a.find_similar_list(input_list,5)
+    send_json_data_str = {
+        "recommend" : data
+    }
+    message = json.dumps(send_json_data_str)
+    conn.send(message.encode())
+
 host_response = None
 user_id = ""
 def to_client(conn, addr):
@@ -186,8 +196,12 @@ def to_client(conn, addr):
                             conn.send(message.encode())
 
         else:
-            #챗봇 
-            send_chat_data(conn,recv_json_data)
+            if recv_json_data['class'] == 'query' :
+                #챗봇 
+                send_chat_data(conn,recv_json_data)
+            elif recv_json_data['class'] == 'recommend':
+                #과목추천
+                get_lecture_recommend(conn,host_response,user_id)
  
    
 

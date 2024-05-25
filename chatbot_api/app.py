@@ -137,7 +137,23 @@ def load():
 # recommand 
 @app.route('/recommend', methods=['GET'])
 def recommand():
-    body = request.get_json()
+    mySocket = socket.socket()
+    mySocket.connect((host, port))
+    # 챗봇 엔진 질의 요청
+    json_data = {
+        'class' : 'recommend'
+    }
+    
+    message = json.dumps(json_data)
+    mySocket.send(message.encode())
+
+    # 챗봇 엔진 답변 출력
+    data = mySocket.recv(2048).decode()
+    print(data)
+    ret_data = json.loads(data)
+    # 챗봇 엔진 서버 연결 소켓 닫기
+    mySocket.close()
+    return jsonify(ret_data)
 
 
 @app.route('/')
