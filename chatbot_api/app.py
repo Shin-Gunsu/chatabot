@@ -92,6 +92,7 @@ def logout():
 
     except Exception as ex:
         # 오류 발생 시 500 Error
+        print(ex)
         abort(500)
 
 @app.route('/load', methods=['POST'])

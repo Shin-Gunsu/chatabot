@@ -223,6 +223,11 @@ def to_client(conn, addr):
                         lmc = LoginMakeCookie(user_id, user_pw)
                         if user_pw == "logout":
                             lmc.logout()
+                            send_json_data_str = {
+                                "Logout": "로그아웃 성공!"
+                            }
+                            message = json.dumps(send_json_data_str)
+                            conn.send(message.encode())
                         else:
                             host_response = lmc.makeCookie() #쿠키 생성 및 HOST 응답 저장
 
