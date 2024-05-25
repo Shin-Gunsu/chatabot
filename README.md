@@ -16,4 +16,6 @@
   pip install openai
   pip install pandas
   pip install beautifulsoup4 lxml
+  pip install gensim
+  pip install scipy==1.10.1
 ```
