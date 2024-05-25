@@ -18,7 +18,8 @@ from utils.GetAnswer_assistant import GetAnswer_assistant
 from utils.Scrap import Scrap
 from utils.LoginMakeCookie import LoginMakeCookie
 from config.GlobalParams import gptapi_key
-from models.recommender import Recommender
+from models.recommender.Recommender import Recommender
+from datetime import datetime, timedelta
 
 # 전처리 객체 생성
 p = Preprocess(word2index_dic=file_path + '/train_tools/dict/chatbot_dict.bin',
@@ -30,6 +31,32 @@ print('의도 분류 모델 호출')
 # 개체명 인식 모델
 ner = NerModel(model_name=file_path + '/models/ner/ner_model.h5', proprocess=p)
 print('개체명 인식 모델 호출')
+
+#생성된지 3개월이 지난 쿠키 파일 삭제
+def old_cookie_remove():
+    directory = "./utils/cookietxt"
+    if not os.path.exists(directory):
+        print(f"디렉토리가 존재하지 않습니다: {directory}")
+        return
+    
+    time_limit = timedelta(days=90)  # 쿠키 파일 만료 기한 3개월로 설정
+    current_time = datetime.now()
+    files_deleted = 0  # 삭제된 파일 수 카운트
+
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        file_stat = os.stat(file_path)
+        file_creation_time = datetime.fromtimestamp(file_stat.st_mtime)
+
+        if current_time - file_creation_time > time_limit:
+            os.remove(file_path)
+            files_deleted += 1
+            print(f"{file_path} 삭제됨: 3개월 이상된 파일.")
+
+    if files_deleted == 0:
+        print("삭제할 3개월 이상된 파일이 없습니다.")
+    else:
+        print(f"총 {files_deleted}개의 파일이 삭제되었습니다.")
 
 #chat에서 받은 데이터 
 def send_chat_data(conn,recv_json_data):
@@ -126,7 +153,7 @@ def send_chat_data(conn,recv_json_data):
         conn.send(message.encode())
 
 def get_lecture_recommend(conn,host_response,user_id):
-    a = Recommender('../models/recommender/lecture_dic.txt','../models/recommender/lecture_model.bin')
+    a = Recommender('./models/recommender/lecture_dic.txt','./models/recommender/lecture_model.bin')
     input_list = a.get_input_list(host_response,user_id)
     data = a.find_similar_list(input_list,5)
     send_json_data_str = {
@@ -171,6 +198,8 @@ def to_client(conn, addr):
                             conn.send(message.encode())
                         else:
                             host_response = lmc.makeCookie() #쿠키 생성 및 HOST 응답 저장
+                            if user_pw == 'test':
+                                get_lecture_recommend(conn,host_response,user_id)
 
                             if (lmc.isLogin()):
                                 studentnumscrap = Scrap()
@@ -194,14 +223,15 @@ def to_client(conn, addr):
 
                             message = json.dumps(send_json_data_str)
                             conn.send(message.encode())
-
         else:
             if recv_json_data['class'] == 'query' :
                 #챗봇 
                 send_chat_data(conn,recv_json_data)
+            '''
             elif recv_json_data['class'] == 'recommend':
                 #과목추천
                 get_lecture_recommend(conn,host_response,user_id)
+            '''
  
    
 
@@ -219,6 +249,8 @@ if __name__ == '__main__':
     bot = BotServer(port, listen)
     bot.create_sock()
     print("bot start")
+    print("생성된지 3개월 이상된 쿠키 파일 확인")
+    old_cookie_remove()
 
     while True:
         conn, addr = bot.ready_for_client()

@@ -135,25 +135,28 @@ def load():
         abort(500)
 
 # recommand 
-@app.route('/recommend', methods=['GET'])
-def recommand():
-    mySocket = socket.socket()
-    mySocket.connect((host, port))
-    # 챗봇 엔진 질의 요청
-    json_data = {
-        'class' : 'recommend'
-    }
-    
-    message = json.dumps(json_data)
-    mySocket.send(message.encode())
+@app.route('/recommend', methods=['POST'])
+def recommend():
+    body = request.get_json()
+    try:
+        mySocket = socket.socket()
+        mySocket.connect((host, port))
+        message = json.dumps(body)
+        mySocket.send(message.encode())
 
-    # 챗봇 엔진 답변 출력
-    data = mySocket.recv(2048).decode()
-    print(data)
-    ret_data = json.loads(data)
-    # 챗봇 엔진 서버 연결 소켓 닫기
-    mySocket.close()
-    return jsonify(ret_data)
+        data = mySocket.recv(4096).decode(encoding="euc-kr")
+        #print(data)
+        ret_data = json.loads(data)
+        #print(ret_data)
+        mySocket.close()
+        
+
+        return jsonify(ret_data)
+
+    except Exception as ex:
+        # 오류 발생 시 500 Error
+        print(ex)
+        abort(500)
 
 
 @app.route('/')

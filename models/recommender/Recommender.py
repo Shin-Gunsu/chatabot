@@ -8,7 +8,7 @@ sys.path.append(file_path+'../../../')
 from utils.Scrap import Scrap
 from utils.LoadLectureData import LoadLectureData
 
-class Recommaender:
+class Recommender:
     def __init__(self, lecture_dic_path, model_path):
         with open(lecture_dic_path, 'r', encoding='utf8') as file:
             lecture_dic = {}
@@ -16,7 +16,7 @@ class Recommaender:
                 key, value = line.strip().split(' ', 1)
                 value = value.split()
                 lecture_dic[key] = value
-        self.lecture_dic = lecture_dic[key]
+        self.lecture_dic = lecture_dic
         self.model = FastText.load(model_path)
         self.length = len(self.lecture_dic)      
     
@@ -27,11 +27,12 @@ class Recommaender:
     def get_input_list(self, host_response, user_id):
         studentnumscrap = Scrap()
         r = studentnumscrap.scrapStudentNumber(host_response)
-
         start_year = ''.join(filter(str.isdigit, r))[:4]
         coursehistoryscrap = Scrap()
         chlist = coursehistoryscrap.scrapCourseHistory(user_id, int(start_year))
 
+        for i in chlist:
+            print(i)
         loader = LoadLectureData()
         code_list = []
 
@@ -46,6 +47,7 @@ class Recommaender:
         for code in code_list:
             if code in self.lecture_dic:
                 result += self.lecture_dic[code]
+
         return result
 
 
@@ -57,6 +59,8 @@ class Recommaender:
             similarity = np.dot(input_vector, list_vector) / (np.linalg.norm(input_vector) * np.linalg.norm(list_vector))
             similarities[key] = (lst, similarity)
         top_similarities = sorted(similarities.items(), key=lambda x: x[1][1], reverse=True)[:top_n]
-        return list(top_similarities.keys())
+        aa = [item[0] for item in list(top_similarities)]
+
+        return aa
     
-a = Recommaender(file_path + '\\lecture_dic.txt', file_path + '\\lecture_model.bin')
+#a = Recommaender(file_path + '\\lecture_dic.txt', file_path + '\\lecture_model.bin')
