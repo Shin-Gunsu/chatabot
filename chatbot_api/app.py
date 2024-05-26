@@ -17,6 +17,7 @@ def get_answer_from_engine(query):
 
     # 챗봇 엔진 질의 요청
     json_data = {
+        'class' : 'query',
         'query' : query
     }
     

@@ -19,6 +19,7 @@ while True:
 
     # 챗봇 엔진 질의 요청
     json_data = {
+        'class' : 'query',
         'query': query
     }
     message = json.dumps(json_data)
@@ -27,14 +28,7 @@ while True:
     # 챗봇 엔진 답변 출력
     data = mySocket.recv(2048).decode()
     ret_data = json.loads(data)
-    if(ret_data['Intent']==1):
-        print("답변 : ")
-        print(ret_data['Answer'])
-        print(ret_data)
-        print("\n")
-    else :
-        print(ret_data['Intent'])
-        print(ret_data)
-        print("\n")
+    print(ret_data)
+
     # 챗봇 엔진 서버 연결 소켓 닫기
     mySocket.close()
