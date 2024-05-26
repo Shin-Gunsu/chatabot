@@ -70,6 +70,94 @@ def login():
         # 오류 발생 시 500 Error
         abort(500)
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    body = request.get_json()
+    try:
+
+        
+        mySocket = socket.socket()
+        mySocket.connect((host, port))
+        message = json.dumps(body)
+        mySocket.send(message.encode())
+
+        data = mySocket.recv(4096).decode(encoding="euc-kr")
+        #print(data)
+        ret_data = json.loads(data)
+        #print(ret_data)
+        mySocket.close()
+        
+
+        return jsonify(ret_data)
+
+    except Exception as ex:
+        # 오류 발생 시 500 Error
+        print(ex)
+        abort(500)
+
+@app.route('/load', methods=['POST'])
+def load():
+    body = request.get_json()
+    try:
+        # bot서버로 id, pw전달
+        
+        mySocket = socket.socket()
+        mySocket.connect((host, port))
+        message = json.dumps(body)
+        print(message)
+        mySocket.send(message.encode())
+
+        buffer = []
+        while True:
+            part = mySocket.recv(4096).decode(encoding="euc-kr")
+            buffer.append(part)
+            if "\n" in part:
+                break
+            '''
+            if part:
+                #print(part)
+                buffer.append(part)
+            else:
+                break
+            '''
+
+        data = ''.join(buffer).strip()
+        print(data)
+        ret_data = json.loads(data)
+        #print(ret_data)
+        mySocket.close()
+        
+
+        return jsonify(ret_data)
+
+    except Exception as ex:
+        print(ex)
+        abort(500)
+
+# recommand 
+@app.route('/recommend', methods=['POST'])
+def recommend():
+    body = request.get_json()
+    try:
+        mySocket = socket.socket()
+        mySocket.connect((host, port))
+        message = json.dumps(body)
+        mySocket.send(message.encode())
+
+        data = mySocket.recv(4096).decode(encoding="euc-kr")
+        #print(data)
+        ret_data = json.loads(data)
+        #print(ret_data)
+        mySocket.close()
+        
+
+        return jsonify(ret_data)
+
+    except Exception as ex:
+        # 오류 발생 시 500 Error
+        print(ex)
+        abort(500)
+
 
 @app.route('/')
 def hello():

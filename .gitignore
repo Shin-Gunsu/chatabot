@@ -3,6 +3,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,pycharm,macos
 utils/cookietxt/
 config/GlobalParams.py
+models/recommender/lecture_model.bin.wv.vectors_ngrams.npy
 ### macOS ###
 # General
 .DS_Store
