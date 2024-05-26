@@ -227,11 +227,21 @@ def to_client(conn, addr):
             if recv_json_data['class'] == 'query' :
                 #챗봇 
                 send_chat_data(conn,recv_json_data)
-            '''
-            elif recv_json_data['class'] == 'recommend':
-                #과목추천
-                get_lecture_recommend(conn,host_response,user_id)
-            '''
+            
+            # elif recv_json_data['class'] == 'recommend':
+            #     #과목추천
+            #     get_lecture_recommend(conn,host_response,user_id)
+            
+            else :
+                print('class 엄슴, json에 class로 분기 나누셈')
+                send_json_data_str = {
+                    "Answer" : 'class 엄슴, json에 class로 분기 나누셈'
+                }
+                message = json.dumps(send_json_data_str)
+                conn.send(message.encode())
+
+                
+    
  
    
 
