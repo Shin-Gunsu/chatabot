@@ -195,13 +195,13 @@ def send_chat_data(conn,recv_json_data):
 
 def get_lecture_recommend(conn,host_response,user_id):
     a = Recommender('./models/recommender/lecture_dic.txt','./models/recommender/lecture_model.bin')
-    input_list = a.get_input_list(host_response,user_id)
-    data = a.find_similar_list(input_list, 282)
-    print(data)
+    input_code, input_name = a.get_input_list(host_response,user_id)
+    data = a.find_similar_list(input_code, 282)
     load_lecture_data = LoadLectureData()
     bb = load_lecture_data.getLectureForCode(data)
     bb = [(i[0][:6], i[1]) for i in bb]
-    print(bb)
+    data = a.fillter_lecture(bb, input_code, input_name)
+    print(data)
     send_json_data_str = {
         "recommend" : data
     }
@@ -272,16 +272,10 @@ def to_client(conn, addr):
 
         elif "selectedDepartment" in recv_json_data:
             send_lecture_data(conn,recv_json_data)
+        elif "recommand" in recv_json_data:
+            get_lecture_recommend(conn,host_response,user_id)
         else:
-
-            send_chat_data(conn,recv_json_data)
-            '''
-            elif recv_json_data['class'] == 'recommend':
-                #과목추천
-                get_lecture_recommend(conn,host_response,user_id)
-            '''
- 
-   
+            send_chat_data(conn,recv_json_data)   
 
     except Exception as ex:
         print(ex)
