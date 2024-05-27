@@ -272,7 +272,7 @@ def to_client(conn, addr):
 
         elif "selectedDepartment" in recv_json_data:
             send_lecture_data(conn,recv_json_data)
-        elif "recommand" in recv_json_data:
+        elif "recommend" in recv_json_data:
             get_lecture_recommend(conn,host_response,user_id)
         else:
             send_chat_data(conn,recv_json_data)   
