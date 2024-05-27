@@ -196,7 +196,12 @@ def send_chat_data(conn,recv_json_data):
 def get_lecture_recommend(conn,host_response,user_id):
     a = Recommender('./models/recommender/lecture_dic.txt','./models/recommender/lecture_model.bin')
     input_list = a.get_input_list(host_response,user_id)
-    data = a.find_similar_list(input_list,5)
+    data = a.find_similar_list(input_list, 282)
+    print(data)
+    load_lecture_data = LoadLectureData()
+    bb = load_lecture_data.getLectureForCode(data)
+    bb = [(i[0][:6], i[1]) for i in bb]
+    print(bb)
     send_json_data_str = {
         "recommend" : data
     }

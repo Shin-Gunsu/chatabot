@@ -30,9 +30,6 @@ class Recommender:
         start_year = ''.join(filter(str.isdigit, r))[:4]
         coursehistoryscrap = Scrap()
         chlist = coursehistoryscrap.scrapCourseHistory(user_id, int(start_year))
-
-        for i in chlist:
-            print(i)
         loader = LoadLectureData()
         code_list = []
 
@@ -47,7 +44,7 @@ class Recommender:
         for code in code_list:
             if code in self.lecture_dic:
                 result += self.lecture_dic[code]
-
+        print(code_list)
         return result
 
 
@@ -60,7 +57,7 @@ class Recommender:
             similarities[key] = (lst, similarity)
         top_similarities = sorted(similarities.items(), key=lambda x: x[1][1], reverse=True)[:top_n]
         aa = [item[0] for item in list(top_similarities)]
-
+        
         return aa
     
 #a = Recommaender(file_path + '\\lecture_dic.txt', file_path + '\\lecture_model.bin')
