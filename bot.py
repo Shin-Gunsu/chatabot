@@ -198,7 +198,7 @@ def get_lecture_recommend(conn,host_response,user_id):
     input_code, input_name = a.get_input_list(host_response,user_id)
     data = a.find_similar_list(input_code, 282)
     load_lecture_data = LoadLectureData()
-    bb = load_lecture_data.getLectureForCode(data)
+    bb = load_lecture_data.getLectureForCode2(data)
     bb = [(i[0][:6], i[1]) for i in bb]
     data = a.fillter_lecture(bb, input_code, input_name)
     print(data)

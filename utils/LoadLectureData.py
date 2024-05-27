@@ -36,7 +36,7 @@ class LoadLectureData:
 
         return lecture_list
     
-    def getLectureForCode(self, code_list):
+    def getLectureForCode2(self, code_list):
         lecture_list = []
         for code in code_list:
             tmp = code + '-01'
