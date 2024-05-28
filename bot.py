@@ -20,6 +20,7 @@ from utils.LoginMakeCookie import LoginMakeCookie
 from config.GlobalParams import gptapi_key
 from models.recommender.Recommender import Recommender
 from datetime import datetime, timedelta
+from utils.LoadLectureData import LoadLectureData
 
 # 전처리 객체 생성
 p = Preprocess(word2index_dic=file_path + '/train_tools/dict/chatbot_dict.bin',
@@ -57,6 +58,46 @@ def old_cookie_remove():
         print("삭제할 3개월 이상된 파일이 없습니다.")
     else:
         print(f"총 {files_deleted}개의 파일이 삭제되었습니다.")
+def send_lecture_data(conn,recv_json_data):
+    department_list = []
+    send_list = []
+    error_msg = ""
+    selected_department = recv_json_data['selectedDepartment']
+    print(selected_department)
+    load_lecture_data = LoadLectureData()
+    department_list = load_lecture_data.getDepartmentList(selected_department)
+
+    if len(department_list) > 0:
+        error_msg = ""
+        for lecture in department_list:
+            json_lecture = {
+                "id" : lecture[0],
+                "name":lecture[1],
+                "professor": lecture[2],
+                "grade": lecture[3],
+                "credit": lecture[4],
+                "type1": lecture[5],
+                "type2": lecture[6],
+                "targetDepartment": lecture[7],
+                "target": lecture[8],
+                "time": lecture[9],
+                "place": lecture[10],
+                "creditDetail": lecture[11],
+                "limit": lecture[12],
+                "timeData": lecture[13]
+            }
+            send_list.append(json_lecture)
+    else:
+        error_msg = "해당 학부는 개설된 강의가 없습니다."
+
+
+    send_json_data_str = {
+        "courses": send_list,
+        "error": error_msg
+    }
+    message = json.dumps(send_json_data_str)
+    message += "\n"
+    conn.send(message.encode())
 
 #chat에서 받은 데이터 
 def send_chat_data(conn,recv_json_data):
@@ -154,8 +195,13 @@ def send_chat_data(conn,recv_json_data):
 
 def get_lecture_recommend(conn,host_response,user_id):
     a = Recommender('./models/recommender/lecture_dic.txt','./models/recommender/lecture_model.bin')
-    input_list = a.get_input_list(host_response,user_id)
-    data = a.find_similar_list(input_list,5)
+    input_code, input_name = a.get_input_list(host_response,user_id)
+    data = a.find_similar_list(input_code, 282)
+    load_lecture_data = LoadLectureData()
+    bb = load_lecture_data.getLectureForCode2(data)
+    bb = [(i[0][:6], i[1]) for i in bb]
+    data = a.fillter_lecture(bb, input_code, input_name)
+    print(data)
     send_json_data_str = {
         "recommend" : data
     }
@@ -223,23 +269,14 @@ def to_client(conn, addr):
 
                             message = json.dumps(send_json_data_str)
                             conn.send(message.encode())
+
+        elif "selectedDepartment" in recv_json_data:
+            send_lecture_data(conn,recv_json_data)
+        elif "recommend" in recv_json_data:
+            get_lecture_recommend(conn,host_response,user_id)
         else:
-            if recv_json_data['class'] == 'query' :
-                #챗봇 
-                send_chat_data(conn,recv_json_data)
-            
-            # elif recv_json_data['class'] == 'recommend':
-            #     #과목추천
-            #     get_lecture_recommend(conn,host_response,user_id)
-            
-            else :
-                print('class 엄슴, json에 class로 분기 나누셈')
-                send_json_data_str = {
-                    "Answer" : 'class 엄슴, json에 class로 분기 나누셈'
-                }
-                message = json.dumps(send_json_data_str)
-                conn.send(message.encode())
-                
+            send_chat_data(conn,recv_json_data)   
+
     except Exception as ex:
         print(ex)
 

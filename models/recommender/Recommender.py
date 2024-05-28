@@ -30,14 +30,12 @@ class Recommender:
         start_year = ''.join(filter(str.isdigit, r))[:4]
         coursehistoryscrap = Scrap()
         chlist = coursehistoryscrap.scrapCourseHistory(user_id, int(start_year))
-
-        for i in chlist:
-            print(i)
         loader = LoadLectureData()
         code_list = []
-
+        name_list = []
         for i in chlist:
             name = i.split('(')[0]
+            name_list.append(name)
             code = loader.getCode(name)
             if len(code) > 0:
                 code_list.append(code.split('-')[0])
@@ -48,7 +46,7 @@ class Recommender:
             if code in self.lecture_dic:
                 result += self.lecture_dic[code]
 
-        return result
+        return result, name_list
 
 
     def find_similar_list(self, input_list, top_n):
@@ -60,7 +58,19 @@ class Recommender:
             similarities[key] = (lst, similarity)
         top_similarities = sorted(similarities.items(), key=lambda x: x[1][1], reverse=True)[:top_n]
         aa = [item[0] for item in list(top_similarities)]
-
+        
         return aa
+    
+    def fillter_lecture(self, input_list, code_fillter, name_fillter):
+        fillter_list = ['CSE', 'HRD', 'SHA', 'SHB']
+        result = []
+        for i in input_list:
+            if i[0] in code_fillter:
+                continue
+            if i[1] in name_fillter:
+                continue
+            if i[0][:3] in fillter_list:
+                result.append(i[0] + " | " + i[1])
+        return result
     
 #a = Recommaender(file_path + '\\lecture_dic.txt', file_path + '\\lecture_model.bin')

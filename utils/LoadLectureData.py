@@ -36,6 +36,14 @@ class LoadLectureData:
 
         return lecture_list
     
+    def getLectureForCode2(self, code_list):
+        lecture_list = []
+        for code in code_list:
+            tmp = code + '-01'
+            if tmp in self.lecture_dic:
+                lecture_list.append(self.lecture_dic[tmp])
+        return lecture_list
+    
     def searchLectureForName(self, name):
         lecture_list = [lecture for lecture in self.lecture_list if lecture[1].__contains__(name)]
         return lecture_list
