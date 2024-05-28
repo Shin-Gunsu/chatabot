@@ -239,12 +239,7 @@ def to_client(conn, addr):
                 }
                 message = json.dumps(send_json_data_str)
                 conn.send(message.encode())
-
                 
-    
- 
-   
-
     except Exception as ex:
         print(ex)
 
