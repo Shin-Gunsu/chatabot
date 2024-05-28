@@ -120,9 +120,10 @@ def send_chat_data(conn,recv_json_data):
         assistant_model.create_thread()
         answer = assistant_model.ask(query)
         img_set =""
-        if ("캠퍼스" in answer or "지도" in answer) and "위치하고" in answer:
+        if ("캠퍼스" in answer or "지도" in answer):
             img_set = "map"
 
+        print(img_set)
         print(answer)
         send_json_data_str = {
             "Answer" : answer,
