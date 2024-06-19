@@ -129,7 +129,6 @@ def send_chat_data(conn,recv_json_data):
             "Answer" : answer,
             "Img":img_set
         }
-        assistant_model.end_QnA()
         message = json.dumps(send_json_data_str)
         conn.send(message.encode())
         print(send_json_data_str)
